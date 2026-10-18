@@ -13,17 +13,17 @@
 @source "../js/**/*.js";
 
 @theme {
-  --color-bg: #7eb85f;
-  --color-surface: #fff6ea;
-  --color-border: #3a2a1a;
-  --color-ink: #3a2a1a;
-  --color-ink-muted: #6b5344;
-  --color-ink-faint: #8a7564;
-  --color-accent: #e24b32;
-  --font-sans: "DM Sans", system-ui, sans-serif;
-  --font-display: "Luckiest Guy", "DM Sans", sans-serif;
+  --color-bg: #fafaf5;
+  --color-surface: #fafaf5;
+  --color-border: #f3e8cc;
+  --color-ink: #1c1e1b;
+  --color-ink-muted: #5c6b5e;
+  --color-ink-faint: #5c6b5e;
+  --color-accent: #f96015;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Oswald", Impact, sans-serif;
 }
 
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
-.editorial { font-family: var(--font-display); font-weight: 400; letter-spacing: 0.01em; line-height: 1.25; }
+.editorial { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.15; }

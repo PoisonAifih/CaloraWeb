@@ -59,14 +59,17 @@ export function renderDashboardOverview() {
   const food = daily.consumed;
 
   // ── CALORIE HERO CARD ──────────────────────────────────────────────────────
-  const pct = Math.min(100, Math.round((food.kcal / targets.kcal) * 100));
+  const rawPct = Math.round((food.kcal / targets.kcal) * 100);
+  const pct = Math.min(100, rawPct);
+  const kcalState = rawPct > 100 ? 'over' : rawPct >= 90 ? 'met' : '';
 
   const kcalEl = document.getElementById('dash-kcal-consumed');
   const fillEl = document.getElementById('dash-kcal-fill');
   const pctEl  = document.getElementById('dash-kcal-pct');
   const tgtEl  = document.getElementById('dash-kcal-target');
   if (kcalEl) kcalEl.textContent = food.kcal.toLocaleString('id-ID');
-  if (pctEl)  pctEl.textContent  = `${pct}%`;
+  if (pctEl)  { pctEl.textContent = `${rawPct}%`; pctEl.dataset.state = kcalState; }
+  if (fillEl) fillEl.dataset.state = kcalState;
   if (tgtEl)  tgtEl.textContent  = `of ${targets.kcal.toLocaleString('id-ID')} kcal target`;
   // Animate the bar width after a tick so CSS transition fires
   if (fillEl) setTimeout(() => { fillEl.style.width = `${pct}%`; }, 50);

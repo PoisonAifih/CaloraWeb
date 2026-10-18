@@ -21,7 +21,7 @@
   border: none;
   border-radius: var(--r-lg);
   padding: 20px 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 }
 
 .day-kcal {
@@ -59,7 +59,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow);
 }
 
 .macro-card-label {
@@ -70,9 +70,9 @@
 }
 
 .macro-card-val {
-  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: 24px;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--ink);
   line-height: 1.1;
 }
@@ -90,7 +90,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow);
 }
 
 .macro-detail-row {
@@ -120,7 +120,7 @@
 .empty-food {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 20px 20px 20px 6px;
+  border-radius: var(--r-lg);
   padding: 32px;
   text-align: center;
   color: var(--ink);
@@ -136,7 +136,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 }
 
 .food-log-info {
@@ -197,3 +197,8 @@
   .food-log-actions { justify-content: space-between; }
   .food-log-macros { flex-wrap: wrap; gap: 6px 12px; }
 }
+
+/* Macro ratio bar (DESIGN.md §5.2) */
+.macro-track .m-p { background: var(--macro-protein); }
+.macro-track .m-c { background: var(--macro-carbs); }
+.macro-track .m-f { background: var(--macro-fat); }

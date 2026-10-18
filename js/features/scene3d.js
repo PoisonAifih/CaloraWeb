@@ -42,7 +42,7 @@ export function initDashCanvas() {
       s.y -= s.speed;
       if (s.y < 0) { s.y = h; s.x = Math.random() * w; }
 
-      ctx.fillStyle = `rgba(247, 241, 232, ${s.a})`;
+      ctx.fillStyle = `rgba(24, 84, 42, ${s.a * 0.35})`;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();

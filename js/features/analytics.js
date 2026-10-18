@@ -52,18 +52,18 @@ export function updateTrendChart(period = '7D') {
     data: {
       labels,
       datasets: [
-        { label: 'Protein (g)', data: pData, borderColor: '#7ab5a0', backgroundColor: '#7ab5a022', tension: 0.3, fill: true },
-        { label: 'Carbs (g)',   data: cData, borderColor: '#c9a96e', backgroundColor: '#c9a96e22', tension: 0.3, fill: true },
-        { label: 'Fat (g)',     data: fData, borderColor: '#c47d6a', backgroundColor: '#c47d6a22', tension: 0.3, fill: true },
-        { label: 'Sugar (g)',   data: sData, borderColor: '#a07ab5', backgroundColor: '#a07ab522', tension: 0.3, fill: true }
+        { label: 'Protein (g)', data: pData, borderColor: '#9abc05', backgroundColor: '#9abc0522', tension: 0.3, fill: true },
+        { label: 'Carbs (g)',   data: cData, borderColor: '#ffc926', backgroundColor: '#ffc92622', tension: 0.3, fill: true },
+        { label: 'Fat (g)',     data: fData, borderColor: '#f96015', backgroundColor: '#f9601522', tension: 0.3, fill: true },
+        { label: 'Sugar (g)',   data: sData, borderColor: '#18542a', backgroundColor: '#18542a22', tension: 0.3, fill: true }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#9c9488', font: { family: 'DM Sans' } } } },
+      plugins: { legend: { labels: { color: '#5c6b5e', font: { family: 'Inter' } } } },
       scales: {
-        x: { ticks: { color: '#4a4741' }, grid: { color: '#2e2b26' } },
-        y: { ticks: { color: '#4a4741' }, grid: { color: '#2e2b26' } }
+        x: { ticks: { color: '#5c6b5e' }, grid: { color: 'rgba(28, 30, 27, 0.08)' } },
+        y: { ticks: { color: '#5c6b5e' }, grid: { color: 'rgba(28, 30, 27, 0.08)' } }
       }
     }
   });
@@ -104,14 +104,14 @@ export function updateWorkoutChart(period = '7D') {
     type: 'bar',
     data: {
       labels,
-      datasets: [{ label: 'Sets Logged', data: setsData, backgroundColor: '#f7f1e8', borderRadius: 4 }]
+      datasets: [{ label: 'Sets Logged', data: setsData, backgroundColor: '#f96015', borderRadius: 4 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#9c9488', font: { family: 'DM Sans' } } } },
+      plugins: { legend: { labels: { color: '#5c6b5e', font: { family: 'Inter' } } } },
       scales: {
-        x: { ticks: { color: '#4a4741' }, grid: { color: '#2e2b26' } },
-        y: { ticks: { color: '#4a4741' }, grid: { color: '#2e2b26' }, beginAtZero: true }
+        x: { ticks: { color: '#5c6b5e' }, grid: { color: 'rgba(28, 30, 27, 0.08)' } },
+        y: { ticks: { color: '#5c6b5e' }, grid: { color: 'rgba(28, 30, 27, 0.08)' }, beginAtZero: true }
       }
     }
   });

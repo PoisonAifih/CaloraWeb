@@ -38,37 +38,38 @@
 .btn-fill {
   background: var(--accent);
   color: var(--accent-ink);
-  border-color: var(--ink);
+  border-color: transparent;
   border-radius: var(--r-pill);
   min-height: 48px;
   font-weight: 600;
 }
 
-.btn-fill:hover {
-  background: #c73b24;
-  border-color: var(--ink);
+.btn-fill:hover,
+.btn-fill:active {
+  background: var(--accent-hover);
 }
 
+/* Secondary action: cream fill, forest text */
 .btn-ghost {
-  background: transparent;
-  color: var(--ink);
-  border-color: var(--border);
+  background: var(--cream);
+  color: var(--forest);
+  border-color: transparent;
   border-radius: var(--r-pill);
+  font-weight: 600;
 }
 
 .btn-ghost:hover {
-  background: var(--surface-2);
-  border-color: var(--border-2);
+  border-color: var(--forest);
 }
 
 .btn-danger {
-  background: rgba(224, 82, 82, 0.15);
+  background: rgba(213, 37, 24, 0.1);
   color: var(--danger);
-  border-color: rgba(224, 82, 82, 0.3);
+  border-color: rgba(213, 37, 24, 0.3);
 }
 
 .btn-danger:hover {
-  background: rgba(224, 82, 82, 0.25);
+  background: rgba(213, 37, 24, 0.18);
   border-color: var(--danger);
 }
 
@@ -89,7 +90,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -100,31 +101,32 @@
 }
 
 .rating-badge.rating-a {
-  background: rgba(47, 125, 74, 0.15);
+  background: rgba(24, 84, 42, 0.12);
   color: var(--success);
-  border: 1px solid rgba(47, 125, 74, 0.35);
+  border: 1px solid rgba(24, 84, 42, 0.35);
 }
 
+/* Sunshine is a fill only; text stays dark (DESIGN.md §6) */
 .rating-badge.rating-b {
-  background: rgba(242, 193, 74, 0.35);
+  background: var(--sunshine);
   color: var(--ink);
-  border: 1px solid var(--ink);
+  border: 1px solid transparent;
 }
 
 .rating-badge.rating-c {
-  background: rgba(224, 122, 47, 0.18);
-  color: #8a4b12;
-  border: 1px solid rgba(224, 122, 47, 0.45);
+  background: rgba(249, 96, 21, 0.16);
+  color: var(--ink);
+  border: 1px solid rgba(249, 96, 21, 0.5);
 }
 
 .rating-badge.rating-d {
-  background: rgba(155, 44, 44, 0.12);
+  background: rgba(213, 37, 24, 0.1);
   color: var(--danger);
-  border: 1px solid rgba(155, 44, 44, 0.35);
+  border: 1px solid rgba(213, 37, 24, 0.35);
 }
 
 .rating-badge.rating-na {
-  background: rgba(58, 42, 26, 0.06);
+  background: var(--cream);
   color: var(--ink-muted);
   border: 1px solid var(--line);
 }
@@ -133,7 +135,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(28, 30, 27, 0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
@@ -160,7 +162,7 @@
   padding: 28px;
   transform: translateY(12px) scale(0.98);
   transition: transform var(--t-base) var(--ease-spring);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px rgba(24, 84, 42, 0.18);
   max-height: calc(100vh - 48px);
   overflow-y: auto;
 }
@@ -186,7 +188,6 @@
 
 .modal-title {
   font-size: 24px;
-  font-weight: 400;
 }
 
 .confirm-body {
@@ -274,7 +275,7 @@
   padding: 12px 20px;
   border-radius: var(--r-md);
   font-size: 13px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow);
   transform: translateY(20px);
   opacity: 0;
   transition: all 0.3s var(--ease-spring);

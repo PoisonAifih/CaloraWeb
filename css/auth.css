@@ -5,7 +5,7 @@
 .pin-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(58, 42, 26, 0.45);
+  background: rgba(28, 30, 27, 0.45);
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -32,9 +32,8 @@
 
 .login-brand {
   font-size: 32px;
-  color: var(--ink);
+  color: var(--heading);
   margin-bottom: 48px;
-  letter-spacing: -0.04em;
 }
 
 .login-step {
@@ -62,7 +61,7 @@
   border: none;
   border-bottom: 1px solid var(--border-2);
   color: var(--ink);
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 22px;
   padding: 8px 0;
   outline: none;
@@ -85,8 +84,8 @@
   margin-top: 16px;
   background: var(--accent);
   color: var(--accent-ink);
-  border: 1px solid var(--ink);
-  font-family: 'DM Sans', sans-serif;
+  border: 1px solid transparent;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -94,17 +93,17 @@
   min-height: 48px;
   border-radius: var(--r-pill);
   cursor: pointer;
-  transition: opacity var(--t-fast), transform var(--t-fast);
+  transition: background var(--t-fast), transform var(--t-fast);
   align-self: flex-start;
 }
 
-.login-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.login-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
 .login-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 .login-back {
   background: transparent;
   border: none;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--ink-faint);
   cursor: pointer;

@@ -3,31 +3,55 @@
    ========================================================================== */
 
 :root {
-  --bg:          #7eb85f;
-  --bg-end:      #f6c56b;
-  --surface:     #fff6ea;
-  --surface-2:   #fffaf3;
-  --border:      #3a2a1a;
-  --border-2:    #6b5344;
-  --line:        rgba(58, 42, 26, 0.16);
-  --shadow:      0 10px 24px rgba(58, 42, 26, 0.12);
+  /* Palette — Calora DESIGN.md §2 */
+  --forest:      #18542a;
+  --carrot:      #f96015;
+  --carrot-deep: #e04f09;
+  --cream:       #f3e8cc;
+  --canvas:      #fafaf5;
+  --charcoal:    #1c1e1b;
+  --muted-green: #5c6b5e;
+  --kiwi:        #9abc05;
+  --sunshine:    #ffc926;
+  --tomato:      #d52518;
+  --matcha:      #0d3a1f;
 
-  --ink:         #3a2a1a;
-  --ink-muted:   #6b5344;
-  --ink-faint:   #8a7564;
-  --nav:         #3a2a1a;
-  --nav-ink:     #f6f0dc;
+  /* Roles */
+  --bg:          var(--canvas);
+  --surface:     var(--canvas);
+  --surface-2:   var(--cream);
+  --border:      var(--cream);
+  --border-2:    var(--muted-green);
+  --line:        rgba(28, 30, 27, 0.1);
+  --shadow:      0 6px 20px rgba(24, 84, 42, 0.08);
 
-  --accent:      #e24b32;
-  --accent-ink:  #fff8ee;
-  --orange:      #e07a2f;
-  --success:     #2f7d4a;
-  --danger:      #9b2c2c;
+  --ink:         var(--charcoal);
+  --ink-muted:   var(--muted-green);
+  --ink-faint:   var(--muted-green);
+  --heading:     var(--forest);
+  --nav:         var(--forest);
+  --nav-ink:     var(--cream);
 
+  --accent:       var(--carrot);
+  --accent-hover: var(--carrot-deep);
+  --accent-ink:   #ffffff;
+  --orange:       var(--carrot);
+  --success:      var(--forest);
+  --danger:       var(--tomato);
+
+  --macro-protein: var(--kiwi);
+  --macro-carbs:   var(--sunshine);
+  --macro-fat:     var(--carrot);
+  --macro-sugar:   var(--forest);
+
+  --font-display: 'Oswald', Impact, 'Arial Narrow', sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+
+  /* 16px cards, 8px buttons and pill tags */
   --r-sm:  8px;
   --r-md:  12px;
-  --r-lg:  20px;
-  --r-pill: 9999px;
+  --r-lg:  16px;
+  --r-pill: 8px;
 
   --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-base:   cubic-bezier(0.25, 1, 0.5, 1);
@@ -42,10 +66,9 @@
 }
 
 html, body {
-  background: linear-gradient(180deg, var(--bg) 0%, #f0a56a 48%, var(--bg-end) 100%);
-  background-attachment: fixed;
+  background: var(--bg);
   color: var(--ink);
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -56,8 +79,15 @@ html, body {
 }
 
 .editorial {
-  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
   letter-spacing: 0.01em;
-  line-height: 1.25;
+  line-height: 1.15;
+}
+
+h1.editorial,
+h2.editorial,
+h3.editorial {
+  color: var(--heading);
 }
