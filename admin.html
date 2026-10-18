@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calora — Catering Operations</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="css/app.css?v=2.2.0">
+  <link rel="stylesheet" href="css/app.css?v=2.4.0">
 </head>
 <body class="admin-body bg-bg text-ink font-sans">
   <main class="admin-shell mx-auto max-w-6xl p-6">
     <header class="admin-head mb-8 flex items-center justify-between">
-      <div><p class="dash-card-label">Calora operations</p><h1 class="editorial text-3xl">Tomorrow's Kitchen</h1></div>
-      <a class="btn btn-ghost" href="/">User app</a>
+      <div><p class="dash-card-label">Calora operations</p><h1 class="editorial text-3xl" id="admin-title">Tomorrow's Kitchen</h1></div>
+      <button class="btn btn-ghost" id="admin-signout" type="button" hidden>Sign out</button>
     </header>
 
     <form id="admin-login" class="admin-login max-w-md space-y-3">
@@ -22,17 +22,71 @@
       <p id="admin-login-error" role="alert"></p>
     </form>
 
-    <section id="admin-content" hidden>
-      <div class="admin-metrics mb-6 grid gap-4 md:grid-cols-4" id="admin-metrics"></div>
-      <div class="admin-table-wrap overflow-x-auto">
-        <table class="w-full text-left">
-          <thead><tr><th>User</th><th>Target</th><th>Lunch kcal</th><th>Lunch menu</th><th>Adjustment</th><th>Status</th></tr></thead>
-          <tbody id="admin-plan-rows"></tbody>
-        </table>
-      </div>
-      <p class="admin-note mt-4 text-sm text-ink-muted">Kitchen view lists tomorrow lunch orders only.</p>
-    </section>
+    <div id="admin-content" hidden>
+      <nav class="admin-tabs" aria-label="Admin pages">
+        <button type="button" class="admin-tab active" data-view="kitchen">Kitchen</button>
+        <button type="button" class="admin-tab" data-view="menus">Menus</button>
+        <button type="button" class="admin-tab" data-view="qr">QR codes</button>
+      </nav>
+
+      <section class="admin-view" id="view-kitchen">
+        <div class="admin-metrics mb-6 grid gap-4 md:grid-cols-4" id="admin-metrics"></div>
+        <div class="admin-table-wrap overflow-x-auto">
+          <table class="w-full text-left">
+            <thead><tr><th>User</th><th>Target</th><th>Lunch kcal</th><th>Lunch menu</th><th>Adjustment</th><th>Status</th></tr></thead>
+            <tbody id="admin-plan-rows"></tbody>
+          </table>
+        </div>
+        <p class="admin-note mt-4 text-sm text-ink-muted">Kitchen view lists tomorrow lunch orders only.</p>
+      </section>
+
+      <section class="admin-view" id="view-menus" hidden>
+        <form id="menu-form" class="admin-card menu-form">
+          <h2 class="editorial" id="menu-form-title">Register a menu</h2>
+          <input type="hidden" id="menu-id">
+          <div class="menu-grid">
+            <label class="span-2">Name<input id="menu-name" maxlength="120" required placeholder="Ayam panggang, nasi, dan sayur"></label>
+            <label>Meal<select id="menu-meal"><option value="BREAKFAST">Breakfast</option><option value="LUNCH" selected>Lunch</option><option value="DINNER">Dinner</option><option value="SNACK">Snack</option></select></label>
+            <label>Serving size<input id="menu-serving" maxlength="80" placeholder="1 serving"></label>
+            <label>Calories (kcal)<input id="menu-kcal" type="number" min="1" max="5000" step="1" required></label>
+            <label>Protein (g)<input id="menu-p" type="number" min="0" max="1000" step="0.1" value="0"></label>
+            <label>Carbs (g)<input id="menu-c" type="number" min="0" max="1000" step="0.1" value="0"></label>
+            <label>Fat (g)<input id="menu-f" type="number" min="0" max="1000" step="0.1" value="0"></label>
+            <label>Stock (portions)<input id="menu-stock" type="number" min="0" max="100000" step="1" value="50"></label>
+            <label class="span-2">Allergens<input id="menu-allergens" placeholder="Comma separated, e.g. soy, fish"></label>
+            <fieldset class="span-2"><legend>Suitable for</legend>
+              <label class="check"><input type="checkbox" name="menu-diet" value="vegetarian">Vegetarian</label>
+              <label class="check"><input type="checkbox" name="menu-diet" value="vegan">Vegan</label>
+              <label class="check"><input type="checkbox" name="menu-diet" value="pescatarian">Pescatarian</label>
+            </fieldset>
+            <label class="check"><input type="checkbox" id="menu-active" checked>Active</label>
+          </div>
+          <div class="menu-form-actions">
+            <button type="button" class="btn btn-ghost" id="menu-cancel" hidden>Cancel edit</button>
+            <button type="submit" class="btn btn-fill" id="menu-save">Register menu</button>
+          </div>
+          <p class="menu-form-error" id="menu-error" role="alert"></p>
+        </form>
+        <div class="admin-table-wrap">
+          <table>
+            <thead><tr><th>Code</th><th>Menu</th><th>Meal</th><th>Nutrition</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+            <tbody id="menu-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-view" id="view-qr" hidden>
+        <div class="qr-toolbar">
+          <p class="admin-note">Users scan a code with their phone camera to log that menu in Calora.</p>
+          <div class="qr-toolbar-actions">
+            <select id="qr-filter" aria-label="Filter by meal"><option value="">All meals</option><option value="BREAKFAST">Breakfast</option><option value="LUNCH">Lunch</option><option value="DINNER">Dinner</option><option value="SNACK">Snack</option></select>
+            <button type="button" class="btn btn-fill" onclick="window.print()">Print</button>
+          </div>
+        </div>
+        <div class="qr-grid" id="qr-grid"></div>
+      </section>
+    </div>
   </main>
-  <script type="module" src="js/admin.js"></script>
+  <script type="module" src="js/admin.js?v=2.0.0"></script>
 </body>
 </html>

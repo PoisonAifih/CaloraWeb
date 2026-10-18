@@ -8,6 +8,7 @@ import { SecurityMiddleware } from './common/security.middleware';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { FoodModule } from './food/food.module';
 import { HealthController } from './health/health.controller';
+import { MenusModule } from './menus/menus.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfileModule } from './profile/profile.module';
 import { SeedService } from './seed/seed.service';
@@ -23,6 +24,7 @@ import { WeightModule } from './weight/weight.module';
     WeightModule,
     ActivityModule,
     DashboardModule,
+    MenusModule,
     AdminModule,
     AnalyzeModule
   ],

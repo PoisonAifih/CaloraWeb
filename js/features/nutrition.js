@@ -2,7 +2,7 @@ import { state } from '../state.js';
 import { esc, calcNutriGrade } from '../utils.js';
 import { calculateDailyNutritionState, calculateNutritionTargets } from '../domain/nutrition.mjs';
 import { showToast } from '../ui/toast.js';
-import { closeFoodModal, showConfirmModal } from '../ui/modal.js';
+import { closeFoodModal, openFoodModal, showConfirmModal } from '../ui/modal.js';
 import { updateTrendChart } from './analytics.js';
 import { renderDashboardOverview } from './dashboard.js';
 import { requireAuth } from '../ui/guest.js';
@@ -127,6 +127,7 @@ export async function saveManualFoodLog(event) {
     if (!response.ok) throw new Error(payload.error || 'Food entry could not be saved');
     state.addFoodLog(payload);
     event.target.reset();
+    document.getElementById('food-source-input').value = 'MANUAL';
     closeFoodModal();
     renderFoodLog();
     updateTrendChart();
@@ -137,6 +138,24 @@ export async function saveManualFoodLog(event) {
     button.disabled = false;
     button.textContent = 'Save';
   }
+}
+
+// Opens the log form pre-filled from a catering menu QR code (/?menu=<id>).
+export async function openScannedMenu(menuId) {
+  try {
+    const response = await fetch(`/api/menus/${encodeURIComponent(menuId)}`);
+    const menu = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(menu.error || 'Menu not found');
+    document.getElementById('food-name-input').value = menu.name;
+    document.getElementById('food-category-input').value = String(menu.mealType || 'snack').toLowerCase();
+    document.getElementById('food-kcal-input').value = Math.round(menu.calories);
+    document.getElementById('food-p-input').value = menu.proteinG;
+    document.getElementById('food-c-input').value = menu.carbsG;
+    document.getElementById('food-f-input').value = menu.fatG;
+    document.getElementById('food-source-input').value = 'MENU_QR';
+    openFoodModal();
+    showToast('Menu loaded. Check it and tap Save', 'info');
+  } catch (error) { showToast(error.message, 'danger'); }
 }
 
 export async function syncRemoteFoodLogs() {

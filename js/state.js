@@ -12,6 +12,7 @@ class StateStore {
     this.timerRunning = false;
     this.pendingMeal = null;
     this.pendingTab = 'dashboard';
+    this.pendingMenuId = null;
     this.dashboard = null;
   }
 

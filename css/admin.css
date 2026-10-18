@@ -16,3 +16,57 @@
 .admin-table-wrap select { min-height:36px; background:var(--bg); color:var(--ink); border:1px solid var(--border-2); border-radius:6px; }
 .admin-note { margin-top:14px; }
 @media(max-width:760px){.admin-metrics{grid-template-columns:1fr 1fr}.admin-head{align-items:flex-start;flex-direction:column}}
+
+/* ── Admin tabs ─────────────────────────────────────────────────────────── */
+.admin-tabs { display:flex; gap:4px; padding:4px; margin-bottom:24px; width:fit-content; max-width:100%; overflow-x:auto; border-radius:var(--r-pill); background:var(--surface); border:1px solid var(--border); }
+.admin-tab { border:0; background:transparent; color:var(--ink-muted); font:inherit; font-size:14px; font-weight:500; padding:8px 18px; border-radius:var(--r-pill); cursor:pointer; white-space:nowrap; }
+.admin-tab:hover { color:var(--ink); }
+.admin-tab.active { background:var(--accent); color:var(--accent-ink); font-weight:600; }
+
+/* ── Menu registration ──────────────────────────────────────────────────── */
+.admin-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow); padding:24px; margin-bottom:24px; }
+.menu-form h2 { font-size:24px; margin-bottom:16px; }
+.menu-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px 16px; }
+.menu-grid .span-2 { grid-column:span 2; }
+.menu-grid label, .menu-grid legend { display:flex; flex-direction:column; gap:6px; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted); }
+.menu-grid input:not([type="checkbox"]), .menu-grid select, #qr-filter { min-height:44px; padding:10px 12px; border-radius:var(--r-sm); border:1px solid var(--border); background:var(--surface-2); color:var(--ink); font:inherit; font-size:14px; text-transform:none; letter-spacing:0; }
+.menu-grid fieldset { border:0; padding:0; margin:0; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; }
+.menu-grid fieldset legend { width:100%; margin-bottom:6px; }
+.menu-grid label.check { flex-direction:row; align-items:center; gap:8px; font-size:14px; text-transform:none; letter-spacing:0; color:var(--ink); align-self:end; min-height:44px; }
+.menu-grid input[type="checkbox"] { width:18px; height:18px; accent-color:var(--forest); }
+.menu-form-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+.menu-form-error { color:var(--danger); font-size:13px; margin-top:8px; }
+#menu-rows code, .qr-card code { font-size:12px; color:var(--forest); }
+#menu-rows tr.is-inactive td { color:var(--ink-muted); }
+.row-actions { white-space:nowrap; text-align:right; }
+.row-actions .btn + .btn { margin-left:6px; }
+
+/* ── QR codes ───────────────────────────────────────────────────────────── */
+.qr-toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; }
+.qr-toolbar .admin-note { margin:0; }
+.qr-toolbar-actions { display:flex; gap:10px; }
+.qr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
+.qr-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; break-inside:avoid; }
+.qr-card img { width:100%; max-width:220px; height:auto; aspect-ratio:1; background:#fff; border-radius:var(--r-pill); padding:8px; border:1px solid var(--border); }
+.qr-card h3 { font-family:var(--font-display); font-weight:600; font-size:20px; text-transform:uppercase; color:var(--heading); line-height:1.2; }
+.qr-meal, .qr-nutrition, .qr-scan { font-size:12px; color:var(--ink-muted); }
+.qr-scan { font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; }
+.qr-download { margin-top:6px; }
+
+@media(max-width:760px){
+  .menu-grid { grid-template-columns:1fr 1fr; }
+  .qr-toolbar { flex-direction:column; align-items:stretch; }
+  .qr-toolbar-actions > * { flex:1; }
+}
+@media(max-width:480px){
+  .menu-grid { grid-template-columns:1fr; }
+  .menu-grid .span-2 { grid-column:auto; }
+}
+
+@media print {
+  .admin-body { background:#fff; }
+  .admin-head, .admin-tabs, .qr-toolbar, .qr-download, #view-kitchen, #view-menus { display:none !important; }
+  .admin-shell { width:100%; padding:0; }
+  .qr-grid { grid-template-columns:repeat(3,1fr); gap:12px; }
+  .qr-card { box-shadow:none; border:1px solid #ccc; }
+}

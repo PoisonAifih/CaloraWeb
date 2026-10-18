@@ -3,10 +3,25 @@ import { _rawSwitchTab, tabFromPath } from '../ui/router.js';
 import { showToast } from '../ui/toast.js';
 import { updateNavUserDisplay } from '../ui/nav.js';
 import { renderDashboardOverview, syncAdaptiveDashboard } from './dashboard.js';
-import { renderFoodLog, syncRemoteFoodLogs } from './nutrition.js';
+import { openScannedMenu, renderFoodLog, syncRemoteFoodLogs } from './nutrition.js';
 import { syncWebhookWorkouts } from './workout.js';
 
 let _loginUsername = '';
+
+// Admin accounts only use the catering console, not the personal tracker.
+function redirectAdmin(user) {
+  if (user?.role !== 'ADMIN') return false;
+  location.replace('/admin');
+  return true;
+}
+
+export function openPendingMenu() {
+  const menuId = state.pendingMenuId;
+  if (!menuId) return;
+  if (!state.currentUser) return openLoginOverlay();
+  state.pendingMenuId = null;
+  openScannedMenu(menuId);
+}
 
 function applyAuthenticatedUser(user) {
   state.setCurrentUser(user.name, user.id, user.role);
@@ -19,6 +34,7 @@ export async function checkAuth() {
     const response = await fetch('/api/session');
     if (response.ok) {
       const { user } = await response.json();
+      if (redirectAdmin(user)) return true;
       applyAuthenticatedUser(user);
       await syncAdaptiveDashboard();
       const next = tabFromPath();
@@ -82,6 +98,7 @@ export async function submitPassword() {
     let payload = {};
     try { payload = await response.json(); } catch { payload = {}; }
     if (!response.ok) throw new Error(payload.error || 'Unable to sign in');
+    if (redirectAdmin(payload.user)) return;
     applyAuthenticatedUser(payload.user);
     document.getElementById('pin-lock-overlay')?.classList.remove('open');
     _rawSwitchTab(state.pendingTab || 'dashboard');
@@ -90,6 +107,7 @@ export async function submitPassword() {
     renderFoodLog();
     renderDashboardOverview();
     showToast(`Welcome back, ${payload.user.name}`, 'success');
+    openPendingMenu();
   } catch (loginError) {
     passwordInput.value = '';
     error.textContent = loginError instanceof TypeError ? 'The server is not running' : loginError.message;

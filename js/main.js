@@ -6,7 +6,7 @@ import { state } from './state.js';
 import { switchTab, _rawSwitchTab } from './ui/router.js';
 import { initModalListeners, openModal, openFoodModal, closeFoodModal, openBodyStatsModal, closeBodyStatsModal, recalcAKGPreview } from './ui/modal.js';
 import { updateNavIndicator, updateNavUserDisplay } from './ui/nav.js';
-import { checkAuth, submitUsername, loginGoBack, submitPassword, lockApp, closeLoginOverlay, openLoginOverlay } from './features/auth.js';
+import { checkAuth, submitUsername, loginGoBack, submitPassword, lockApp, closeLoginOverlay, openLoginOverlay, openPendingMenu } from './features/auth.js';
 import { renderDashboardOverview, syncAdaptiveDashboard } from './features/dashboard.js';
 import { renderWorkouts, syncTimers, setWorkoutLogFilter, syncWebhookWorkouts } from './features/workout.js';
 import { renderFoodLog, syncRemoteFoodLogs } from './features/nutrition.js';
@@ -44,6 +44,9 @@ if (!window.__FITVAULT_BOOTSTRAPPED__) {
     initModalListeners();
     updateNavUserDisplay();
 
+    // Menu QR codes link to /?menu=<id>; capture it before the router rewrites the URL.
+    state.pendingMenuId = new URLSearchParams(location.search).get('menu');
+
     // 2. Auth check — always redirects to welcome (currentUser is null on boot)
     await checkAuth();
 
@@ -71,6 +74,8 @@ if (!window.__FITVAULT_BOOTSTRAPPED__) {
       ldr.style.opacity = '0';
       setTimeout(() => ldr.remove(), 400);
     }
+
+    openPendingMenu();
   }
 
   document.addEventListener('DOMContentLoaded', () => {
