@@ -21,7 +21,12 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-  <link rel="stylesheet" href="css/app.css?v=2.2.0">
+  <link rel="stylesheet" href="css/app.css?v=2.3.0">
+  <script>
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+      document.documentElement.classList.add('is-ios');
+    }
+  </script>
 </head>
 
 <body>
@@ -91,7 +96,11 @@
               <li>Read tonight and tomorrow's catering.</li>
               <li>Follow weight and calories on Trends.</li>
             </ul>
-            <button class="btn btn-fill" type="button" onclick="openLoginOverlay()">Sign in</button>
+            <div class="guest-actions">
+              <button class="btn btn-fill" type="button" onclick="openLoginOverlay()">Sign in</button>
+              <a class="btn btn-ghost android-download" href="https://github.com/PoisonAifih/CaloraApp-releases/releases/latest/download/app-release.apk"><i class="ph ph-android-logo" aria-hidden="true"></i>Download for Android</a>
+            </div>
+            <p class="android-download-note">Android app (APK). Your phone may ask you to allow installs from this browser.</p>
           </div>
           <div class="food-orbit" aria-hidden="true">
             <div class="food-orbit-spin">
@@ -656,6 +665,7 @@
           <h2 class="editorial">Account</h2>
           <p class="text-sm text-ink-muted" id="profile-account-name">Guest</p>
           <div class="form-actions">
+            <a class="btn btn-ghost android-download" href="https://github.com/PoisonAifih/CaloraApp-releases/releases/latest/download/app-release.apk"><i class="ph ph-android-logo" aria-hidden="true"></i>Android app</a>
             <button class="btn btn-ghost" id="profile-session-button" type="button" onclick="lockApp()">Sign out</button>
           </div>
         </section>
