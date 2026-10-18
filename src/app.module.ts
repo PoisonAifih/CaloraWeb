@@ -11,7 +11,6 @@ import { HealthController } from './health/health.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfileModule } from './profile/profile.module';
 import { SeedService } from './seed/seed.service';
-import { TelegramModule } from './telegram/telegram.module';
 import { WeightModule } from './weight/weight.module';
 
 @Module({
@@ -24,7 +23,6 @@ import { WeightModule } from './weight/weight.module';
     WeightModule,
     ActivityModule,
     DashboardModule,
-    TelegramModule,
     AdminModule,
     AnalyzeModule
   ],

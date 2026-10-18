@@ -300,36 +300,6 @@
   border-color: var(--border-2);
   color: var(--ink);
 }
-.integration-box {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 18px;
-  padding: 16px;
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-}
-
-.integration-box p { color: var(--ink-muted); font-size: 13px; }
-.integration-copy { min-width: 0; }
-.integration-help { max-width: 680px; line-height: 1.55; margin-top: 6px; }
-.telegram-link-actions { margin-top: 14px; }
-.integration-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.telegram-command {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  background: var(--bg);
-  color: var(--ink-muted);
-  font: 12px/1.4 monospace;
-}
-.telegram-command:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.telegram-link-actions small { display: block; color: var(--ink-muted); margin-top: 8px; }
 .trend-weight-form { display: grid; grid-template-columns: 1fr minmax(180px, 260px) auto; align-items: end; gap: 16px; margin-top: 18px; }
 
 @media (max-width: 900px) {
@@ -341,5 +311,5 @@
 }
 
 @media (max-width: 680px) {
-  .integration-box, .trend-weight-form { align-items: stretch; flex-direction: column; grid-template-columns: 1fr; }
+  .trend-weight-form { align-items: stretch; flex-direction: column; grid-template-columns: 1fr; }
 }

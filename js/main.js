@@ -12,7 +12,6 @@ import { renderWorkouts, syncTimers, setWorkoutLogFilter, syncWebhookWorkouts } 
 import { renderFoodLog, syncRemoteFoodLogs } from './features/nutrition.js';
 import { updateTrendChart, updateWorkoutChart, changeChartTimeframe } from './features/analytics.js';
 import { renderTrends, saveWeightLog } from './features/trends.js';
-import { connectTelegram, copyTelegramCommand, loadTelegramStatus } from './features/integrations.js';
 
 // ── Global handlers for HTML inline onclick attributes ────────────────────────
 window.goHome = () => switchTab('dashboard');
@@ -35,8 +34,6 @@ window.setWorkoutLogFilter  = setWorkoutLogFilter;
 window.changeChartTimeframe = changeChartTimeframe;
 window.updateWorkoutChart   = updateWorkoutChart;
 window.saveWeightLog        = saveWeightLog;
-window.connectTelegram      = connectTelegram;
-window.copyTelegramCommand  = copyTelegramCommand;
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 if (!window.__FITVAULT_BOOTSTRAPPED__) {
@@ -49,9 +46,6 @@ if (!window.__FITVAULT_BOOTSTRAPPED__) {
 
     // 2. Auth check — always redirects to welcome (currentUser is null on boot)
     await checkAuth();
-    window.addEventListener('focus', () => {
-      if (state.currentUser) loadTelegramStatus();
-    });
 
     // 3. Data rendering (renders to hidden DOM, no tab switch)
     renderWorkouts();
@@ -104,6 +98,5 @@ if (!window.__FITVAULT_BOOTSTRAPPED__) {
     document.addEventListener('auth:required', openLoginOverlay);
 
     bootApp();
-    loadTelegramStatus();
   });
 }

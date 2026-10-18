@@ -21,8 +21,6 @@ model User {
   weightLogs         WeightLog[]
   activityLogs       ActivityLog[]
   adaptivePlans      AdaptivePlan[]
-  telegramConnection TelegramConnection?
-  bindTokens         TelegramBindToken[]
   sessions           Session[]
   auditEvents        AuditEvent[]        @relation("AuditSubject")
   actorEvents        AuditEvent[]        @relation("AuditActor")
@@ -166,26 +164,6 @@ model CateringMeal {
   menu           Menu?        @relation(fields: [menuId], references: [id])
 
   @@map("catering_meals")
-}
-
-model TelegramConnection {
-  userId         String   @id @map("user_id")
-  telegramUserId String   @unique @map("telegram_user_id")
-  connectedAt    DateTime @default(now()) @map("connected_at")
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("telegram_connections")
-}
-
-model TelegramBindToken {
-  tokenHash String    @id @map("token_hash")
-  userId    String    @map("user_id")
-  expiresAt DateTime  @map("expires_at")
-  usedAt    DateTime? @map("used_at")
-  createdAt DateTime  @default(now()) @map("created_at")
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("telegram_bind_tokens")
 }
 
 model AuditEvent {

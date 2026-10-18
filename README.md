@@ -32,16 +32,6 @@ Open `http://localhost:3005`.
 
 Dave/1234, Alex/5678, Aifih/1414, and Admin/2468 are created when `NODE_ENV` is not production and `CALORA_USERS_JSON` is unset. When that variable is set, those names are not created.
 
-## Telegram bot
-
-```
-cd telegram-bot
-npm install
-npm start
-```
-
-The bot calls Nest `/api/analyze`, `/api/food`, and `/api/food/summary`.
-
 ## Tests
 
 ```

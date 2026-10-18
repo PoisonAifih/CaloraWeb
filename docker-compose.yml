@@ -27,13 +27,5 @@ services:
       postgres:
         condition: service_healthy
 
-  bot:
-    build: ./telegram-bot
-    env_file: ./telegram-bot/.env
-    environment:
-      CALORA_API_URL: http://api:3005
-    depends_on:
-      - api
-
 volumes:
   pgdata:

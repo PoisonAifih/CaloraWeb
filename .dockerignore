@@ -3,5 +3,4 @@ dist
 data
 .env
 .git
-telegram-bot
 *.md

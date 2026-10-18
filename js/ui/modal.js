@@ -72,7 +72,6 @@ export function openBodyStatsModal() {
   if (targetWeightInput && !targetWeightInput.value) targetWeightInput.value = state.bodyStats.bb || 65;
 
   recalcAKGPreview();
-  import('../features/integrations.js').then(module => module.loadTelegramStatus());
 }
 
 export function closeBodyStatsModal() {

@@ -5,6 +5,7 @@ import { publicUser } from '../common/mappers';
 import { randomToken, verifyPassword } from '../common/crypto';
 
 const SESSION_TTL_MS = 30 * 60 * 1000;
+const SESSION_MAX_AGE = SESSION_TTL_MS / 1000;
 
 @Injectable()
 export class AuthService {
@@ -37,22 +38,32 @@ export class AuthService {
     await this.prisma.session.create({
       data: { id: token, userId: user.id, expiresAt: new Date(Date.now() + SESSION_TTL_MS) }
     });
-    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-    res.setHeader('Set-Cookie', `calora_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=1800${secure}`);
-    return { user: publicUser(user, user.profile) };
+    this.writeCookie(res, token, SESSION_MAX_AGE);
+    return { user: publicUser(user, user.profile), sessionToken: token };
   }
 
-  async current(req: Request) {
+  async current(req: Request, res: Response) {
     const user = await this.userFromRequest(req);
     if (!user) throw new UnauthorizedException('Authentication required');
+    this.refreshCookie(req, res);
     const profile = await this.prisma.nutritionProfile.findUnique({ where: { userId: user.id } });
     return { user: publicUser(user, profile) };
+  }
+
+  refreshCookie(req: Request, res: Response) {
+    const token = req.cookies?.calora_session;
+    if (token) this.writeCookie(res, token, SESSION_MAX_AGE);
   }
 
   async logout(req: Request, res: Response) {
     const token = req.cookies?.calora_session;
     if (token) await this.prisma.session.delete({ where: { id: token } }).catch(() => undefined);
-    res.setHeader('Set-Cookie', 'calora_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+    this.writeCookie(res, '', 0);
     return { success: true };
+  }
+
+  private writeCookie(res: Response, token: string, maxAge: number) {
+    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+    res.setHeader('Set-Cookie', `calora_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${maxAge}${secure}`);
   }
 }

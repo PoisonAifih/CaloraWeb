@@ -88,7 +88,7 @@
             <ul>
               <li>Log a meal or a workout.</li>
               <li>Read tonight and tomorrow's catering.</li>
-              <li>Follow weight and calories on Trends, and log from Telegram.</li>
+              <li>Follow weight and calories on Trends.</li>
             </ul>
             <button class="btn btn-fill" type="button" onclick="openLoginOverlay()">Sign in</button>
           </div>
@@ -647,7 +647,7 @@
     <section data-guest-only class="page">
       <div class="guest-banner">
         <p class="dash-card-label">Profile</p>
-        <p>Body stats, goals, and Telegram live here. The fields below are examples.</p>
+        <p>Body stats and goals live here. The fields below are examples.</p>
       </div>
       <div class="guest-sample">
         <span class="sample-pill">Sample</span>
@@ -655,7 +655,6 @@
           <div><span>Weight</span><input readonly value="65 kg" aria-label="Sample weight"></div>
           <div><span>Height</span><input readonly value="170 cm" aria-label="Sample height"></div>
           <div><span>Goal</span><input readonly value="Maintain" aria-label="Sample goal"></div>
-          <div><span>Telegram</span><input readonly value="Not connected" aria-label="Sample Telegram"></div>
         </div>
         <button class="btn btn-fill" type="button" onclick="handleBodyStatsSubmit(event)">Save</button>
       </div>
@@ -732,24 +731,6 @@
           <button type="submit" class="btn btn-fill" id="profile-save-btn">Save</button>
         </div>
       </form>
-
-      <section class="profile-card integration-box" aria-labelledby="integration-title">
-        <div class="integration-copy">
-          <p class="dash-card-label">Telegram</p>
-          <h2 class="editorial" id="integration-title">Log meals in Telegram</h2>
-          <p id="telegram-status" role="status" aria-live="polite">Checking connection…</p>
-          <p class="integration-help">Create a link, open it in Telegram, then press <strong>START</strong>. A photo or description is saved after you confirm it.</p>
-          <div class="telegram-link-actions" id="telegram-link-actions" hidden>
-            <div class="integration-actions">
-              <a class="btn btn-ghost" id="telegram-open-link" href="#" target="_blank" rel="noopener noreferrer">Open Telegram</a>
-              <button type="button" class="btn btn-ghost" onclick="copyTelegramCommand()">Copy /start command</button>
-            </div>
-            <input class="telegram-command" id="telegram-start-command" type="text" readonly aria-label="Telegram connection command" onclick="this.select()">
-            <small id="telegram-link-expiry"></small>
-          </div>
-        </div>
-        <button type="button" class="btn btn-ghost" id="telegram-connect-btn" onclick="connectTelegram()">Create Telegram link</button>
-      </section>
 
       <section class="profile-card">
         <h2 class="editorial">Account</h2>

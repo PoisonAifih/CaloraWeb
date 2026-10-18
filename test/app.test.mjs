@@ -1,13 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import crypto from 'node:crypto';
 import { PrismaClient } from '@prisma/client';
 import { createApp } from '../dist/create-app.js';
 import { PlansService } from '../dist/plans/plans.service.js';
 import { validateFood } from '../dist/common/validation.js';
 
 process.env.CALORA_WEBHOOK_TOKEN = 'test-webhook-secret';
-process.env.TELEGRAM_BOT_USERNAME = process.env.TELEGRAM_BOT_USERNAME || 'Calor4_bot';
 process.env.CALORA_USERS_JSON = JSON.stringify([
   { id: 'dave', name: 'Dave', password: 'dave-pass', profile: { bb: 70, tb: 175, age: 30, sex: 'male', activity: 'moderate', goal: 'maintain' } },
   { id: 'alex', name: 'Alex', password: 'alex-pass', profile: { bb: 60, tb: 165, age: 28, sex: 'female', activity: 'light', goal: 'maintain' } },
@@ -19,7 +17,11 @@ async function login(baseUrl, username, password) {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password })
   });
   assert.equal(response.status, 200);
-  return response.headers.get('set-cookie').split(';')[0];
+  const body = await response.json();
+  const cookie = response.headers.get('set-cookie').split(';')[0];
+  assert.equal(cookie, `calora_session=${body.sessionToken}`);
+  assert.match(response.headers.get('set-cookie'), /Max-Age=1800/);
+  return cookie;
 }
 
 test('API validates nutrition data and isolates each user', async (t) => {
@@ -37,10 +39,11 @@ test('API validates nutrition data and isolates each user', async (t) => {
   const baseUrl = `http://127.0.0.1:${app.getHttpServer().address().port}`;
   await prisma.foodLog.deleteMany({});
   await prisma.session.deleteMany({});
-  await prisma.telegramBindToken.deleteMany({});
-  await prisma.telegramConnection.deleteMany({});
   await prisma.activityLog.deleteMany({ where: { id: { in: ['activity-1', 'activity-1-dup'] } } });
   const daveCookie = await login(baseUrl, 'Dave', 'dave-pass');
+  const refreshed = await fetch(`${baseUrl}/api/session`, { headers: { Cookie: daveCookie } });
+  assert.equal(refreshed.status, 200);
+  assert.match(refreshed.headers.get('set-cookie'), /Max-Age=1800/);
   const alexCookie = await login(baseUrl, 'Alex', 'alex-pass');
   const adminCookie = await login(baseUrl, 'Admin', 'admin-pass');
 
@@ -84,27 +87,6 @@ test('API validates nutrition data and isolates each user', async (t) => {
 
   assert.equal((await fetch(`${baseUrl}/api/admin/dashboard`, { headers: { Cookie: daveCookie } })).status, 403);
   assert.equal((await fetch(`${baseUrl}/api/admin/dashboard`, { headers: { Cookie: adminCookie } })).status, 200);
-
-  const bindTokenResponse = await fetch(`${baseUrl}/api/telegram/bind-token`, { method: 'POST', headers: { Cookie: daveCookie } });
-  const bindPayload = await bindTokenResponse.json();
-  const bindToken = bindPayload.startPayload.slice(5);
-  assert.match(bindPayload.deepLink, /^https:\/\/t\.me\/Calor4_bot\?start=bind_/);
-  const bindTtlMinutes = (new Date(bindPayload.expiresAt) - Date.now()) / 60_000;
-  assert.ok(bindTtlMinutes > 29 && bindTtlMinutes <= 30);
-  const bindHeaders = { 'Content-Type': 'application/json', Authorization: 'Bearer test-webhook-secret' };
-  assert.equal((await fetch(`${baseUrl}/api/telegram/bind`, { method: 'POST', headers: bindHeaders, body: JSON.stringify({ token: bindToken, telegramUserId: '111' }) })).status, 200);
-  assert.equal((await fetch(`${baseUrl}/api/telegram/bind`, { method: 'POST', headers: bindHeaders, body: JSON.stringify({ token: bindToken, telegramUserId: '111' }) })).status, 400);
-  assert.equal((await fetch(`${baseUrl}/api/telegram/bind`, { method: 'POST', headers: bindHeaders, body: JSON.stringify({ token: 'random', telegramUserId: '222' }) })).status, 400);
-
-  const alexBindResponse = await fetch(`${baseUrl}/api/telegram/bind-token`, { method: 'POST', headers: { Cookie: alexCookie } });
-  const alexBindToken = (await alexBindResponse.json()).startPayload.slice(5);
-  assert.equal((await fetch(`${baseUrl}/api/telegram/bind`, { method: 'POST', headers: bindHeaders, body: JSON.stringify({ token: alexBindToken, telegramUserId: '111' }) })).status, 409);
-
-  const expired = 'expired-token';
-  await prisma.telegramBindToken.create({
-    data: { tokenHash: crypto.createHash('sha256').update(expired).digest('hex'), userId: 'alex', expiresAt: new Date(Date.now() - 1000) }
-  });
-  assert.equal((await fetch(`${baseUrl}/api/telegram/bind`, { method: 'POST', headers: bindHeaders, body: JSON.stringify({ token: expired, telegramUserId: '333' }) })).status, 400);
 
   const plans = app.get(PlansService);
   const activity = { id: 'activity-1', provider: 'MANUAL', providerActivityId: 'provider-1', activityType: 'RUN', name: 'Run', startedAt: new Date().toISOString(), durationSeconds: 1800, estimatedEnergyKcal: 300, dataQuality: 'ESTIMATED' };

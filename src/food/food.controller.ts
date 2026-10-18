@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { CurrentUser } from '../common/decorators/current-user';
-import { SessionOrTelegramGuard } from '../common/guards/session-or-telegram.guard';
+import { SessionGuard } from '../common/guards/session.guard';
 import { FoodService } from './food.service';
 
 @Controller('api/food')
-@UseGuards(SessionOrTelegramGuard)
+@UseGuards(SessionGuard)
 export class FoodController {
   constructor(private readonly food: FoodService) {}
 

@@ -13,8 +13,8 @@ export class AuthController {
   }
 
   @Get()
-  current(@Req() req: Request) {
-    return this.auth.current(req);
+  current(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    return this.auth.current(req, res);
   }
 
   @Delete()

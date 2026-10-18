@@ -1,10 +1,10 @@
 import { BadRequestException, Body, Controller, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { SessionOrTelegramGuard } from '../common/guards/session-or-telegram.guard';
+import { SessionGuard } from '../common/guards/session.guard';
 import { AnalyzeService } from './analyze.service';
 
 @Controller('api/analyze')
-@UseGuards(SessionOrTelegramGuard)
+@UseGuards(SessionGuard)
 export class AnalyzeController {
   constructor(private readonly analyze: AnalyzeService) {}
 
