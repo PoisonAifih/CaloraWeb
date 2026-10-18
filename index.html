@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f0dc">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -20,7 +21,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-  <link rel="stylesheet" href="css/app.css?v=2.1.6">
+  <link rel="stylesheet" href="css/app.css?v=2.1.7">
 </head>
 
 <body>
@@ -562,6 +563,106 @@
       </div>
     </div><!-- /tab-nutrition -->
 
+    <div class="tab-panel" id="tab-profile">
+      <section data-guest-only>
+        <div class="guest-banner">
+          <p class="dash-card-label">Profile</p>
+          <p>Body stats and goals live here. The fields below are examples.</p>
+        </div>
+        <div class="guest-sample">
+          <span class="sample-pill">Sample</span>
+          <div class="guest-sample-grid">
+            <div><span>Weight</span><input readonly value="65 kg" aria-label="Sample weight"></div>
+            <div><span>Height</span><input readonly value="170 cm" aria-label="Sample height"></div>
+            <div><span>Goal</span><input readonly value="Maintain" aria-label="Sample goal"></div>
+          </div>
+          <button class="btn btn-fill" type="button" onclick="handleBodyStatsSubmit(event)">Save</button>
+        </div>
+      </section>
+      <div data-authed-only>
+      <div class="page-heading-row">
+        <div>
+          <p class="eyebrow">Account</p>
+          <h1 class="editorial" id="profile-modal-title">Profile</h1>
+        </div>
+      </div>
+      <div class="profile-layout">
+        <form class="profile-card" onsubmit="handleBodyStatsSubmit(event)">
+          <h2 class="editorial">Body and target</h2>
+          <div class="field-row">
+            <div class="field">
+              <label for="inp-bb">Weight (kg)</label>
+              <input type="number" id="inp-bb" step="0.5" value="65" placeholder="65" oninput="recalcAKGPreview()"
+                required>
+            </div>
+            <div class="field">
+              <label for="inp-tb">Height (cm)</label>
+              <input type="number" id="inp-tb" step="0.5" value="171" placeholder="171" oninput="recalcAKGPreview()"
+                required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="inp-age">Age (years)</label>
+            <input type="number" id="inp-age" value="25" placeholder="25" oninput="recalcAKGPreview()" required>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="inp-sex">Biological sex</label>
+              <select id="inp-sex" onchange="recalcAKGPreview()"><option value="male">Male</option><option value="female">Female</option></select>
+            </div>
+            <div class="field">
+              <label for="inp-activity">Activity level</label>
+              <select id="inp-activity" onchange="recalcAKGPreview()"><option value="sedentary">Sedentary</option><option value="light">Light</option><option value="moderate">Moderate</option><option value="active">Active</option></select>
+            </div>
+            <div class="field">
+              <label for="inp-goal">Goal</label>
+              <select id="inp-goal" onchange="recalcAKGPreview()"><option value="lose">Lose weight</option><option value="maintain">Maintain</option><option value="gain">Gain weight</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="inp-target-weight">Target weight (kg)</label><input id="inp-target-weight" type="number" min="30" max="350" step="0.5"></div>
+            <div class="field"><label for="inp-rate">Weekly rate (kg)</label><input id="inp-rate" type="number" min="0" max="1" step="0.1" value="0.25" oninput="recalcAKGPreview()"></div>
+            <div class="field"><label for="inp-diet">Diet preference</label><select id="inp-diet"><option value="none">No preference</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option></select></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="inp-allergies">Allergies</label><input id="inp-allergies" type="text" maxlength="300" placeholder="e.g. dairy, soy"></div>
+            <div class="field"><label for="inp-dislikes">Disliked foods</label><input id="inp-dislikes" type="text" maxlength="300" placeholder="e.g. tuna, mushrooms"></div>
+          </div>
+
+          <!-- AKG Preview Box -->
+          <div class="akg-preview-box">
+            <div class="akg-row">
+              <span>BMR (Basal Metabolic Rate):</span>
+              <strong id="akg-bmr-val">1,598 kcal</strong>
+            </div>
+            <div class="akg-row">
+              <span>Daily calorie target:</span>
+              <strong id="akg-tdee-val" style="color:var(--ink);">2,350 kcal</strong>
+            </div>
+            <div class="akg-macros">
+              <span>Protein: <strong id="akg-p-val">130g</strong></span>
+              <span>Carbs: <strong id="akg-c-val">275g</strong></span>
+              <span>Fat: <strong id="akg-f-val">60g</strong></span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost" onclick="closeBodyStatsModal()">Cancel</button>
+            <button type="submit" class="btn btn-fill" id="profile-save-btn">Save</button>
+          </div>
+        </form>
+
+        <section class="profile-card">
+          <h2 class="editorial">Account</h2>
+          <p class="text-sm text-ink-muted" id="profile-account-name">Guest</p>
+          <div class="form-actions">
+            <button class="btn btn-ghost" id="profile-session-button" type="button" onclick="lockApp()">Sign out</button>
+          </div>
+        </section>
+      </div>
+      </div>
+    </div>
+
   </div><!-- /.page -->
 
   <!-- MODAL — Log Exercise -->
@@ -640,106 +741,6 @@
           <button type="submit" class="btn btn-fill" id="food-save-btn">Save</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="tab-profile">
-    <section data-guest-only class="page">
-      <div class="guest-banner">
-        <p class="dash-card-label">Profile</p>
-        <p>Body stats and goals live here. The fields below are examples.</p>
-      </div>
-      <div class="guest-sample">
-        <span class="sample-pill">Sample</span>
-        <div class="guest-sample-grid">
-          <div><span>Weight</span><input readonly value="65 kg" aria-label="Sample weight"></div>
-          <div><span>Height</span><input readonly value="170 cm" aria-label="Sample height"></div>
-          <div><span>Goal</span><input readonly value="Maintain" aria-label="Sample goal"></div>
-        </div>
-        <button class="btn btn-fill" type="button" onclick="handleBodyStatsSubmit(event)">Save</button>
-      </div>
-    </section>
-    <div data-authed-only>
-    <div class="page-heading-row">
-      <div>
-        <p class="eyebrow">Account</p>
-        <h1 class="editorial" id="profile-modal-title">Profile</h1>
-      </div>
-    </div>
-    <div class="profile-layout">
-      <form class="profile-card" onsubmit="handleBodyStatsSubmit(event)">
-        <h2 class="editorial">Body and target</h2>
-        <div class="field-row">
-          <div class="field">
-            <label for="inp-bb">Weight (kg)</label>
-            <input type="number" id="inp-bb" step="0.5" value="65" placeholder="65" oninput="recalcAKGPreview()"
-              required>
-          </div>
-          <div class="field">
-            <label for="inp-tb">Height (cm)</label>
-            <input type="number" id="inp-tb" step="0.5" value="171" placeholder="171" oninput="recalcAKGPreview()"
-              required>
-          </div>
-        </div>
-        <div class="field">
-          <label for="inp-age">Age (years)</label>
-          <input type="number" id="inp-age" value="25" placeholder="25" oninput="recalcAKGPreview()" required>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label for="inp-sex">Biological sex</label>
-            <select id="inp-sex" onchange="recalcAKGPreview()"><option value="male">Male</option><option value="female">Female</option></select>
-          </div>
-          <div class="field">
-            <label for="inp-activity">Activity level</label>
-            <select id="inp-activity" onchange="recalcAKGPreview()"><option value="sedentary">Sedentary</option><option value="light">Light</option><option value="moderate">Moderate</option><option value="active">Active</option></select>
-          </div>
-          <div class="field">
-            <label for="inp-goal">Goal</label>
-            <select id="inp-goal" onchange="recalcAKGPreview()"><option value="lose">Lose weight</option><option value="maintain">Maintain</option><option value="gain">Gain weight</option></select>
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label for="inp-target-weight">Target weight (kg)</label><input id="inp-target-weight" type="number" min="30" max="350" step="0.5"></div>
-          <div class="field"><label for="inp-rate">Weekly rate (kg)</label><input id="inp-rate" type="number" min="0" max="1" step="0.1" value="0.25" oninput="recalcAKGPreview()"></div>
-          <div class="field"><label for="inp-diet">Diet preference</label><select id="inp-diet"><option value="none">No preference</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option></select></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label for="inp-allergies">Allergies</label><input id="inp-allergies" type="text" maxlength="300" placeholder="e.g. dairy, soy"></div>
-          <div class="field"><label for="inp-dislikes">Disliked foods</label><input id="inp-dislikes" type="text" maxlength="300" placeholder="e.g. tuna, mushrooms"></div>
-        </div>
-
-        <!-- AKG Preview Box -->
-        <div class="akg-preview-box">
-          <div class="akg-row">
-            <span>BMR (Basal Metabolic Rate):</span>
-            <strong id="akg-bmr-val">1,598 kcal</strong>
-          </div>
-          <div class="akg-row">
-            <span>Daily calorie target:</span>
-            <strong id="akg-tdee-val" style="color:var(--ink);">2,350 kcal</strong>
-          </div>
-          <div class="akg-macros">
-            <span>Protein: <strong id="akg-p-val">130g</strong></span>
-            <span>Carbs: <strong id="akg-c-val">275g</strong></span>
-            <span>Fat: <strong id="akg-f-val">60g</strong></span>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-ghost" onclick="closeBodyStatsModal()">Cancel</button>
-          <button type="submit" class="btn btn-fill" id="profile-save-btn">Save</button>
-        </div>
-      </form>
-
-      <section class="profile-card">
-        <h2 class="editorial">Account</h2>
-        <p class="text-sm text-ink-muted" id="profile-account-name">Guest</p>
-        <div class="form-actions">
-          <button class="btn btn-ghost" id="profile-session-button" type="button" onclick="lockApp()">Sign out</button>
-        </div>
-      </section>
-    </div>
     </div>
   </div>
 

@@ -18,6 +18,7 @@ nav.app-nav {
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   margin-bottom: 32px;
+  padding-top: env(safe-area-inset-top);
 }
 
 .nav-inner {
@@ -282,12 +283,6 @@ body.is-authed .nav-user-badge {
   display: none;
 }
 
-#tab-profile {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px 48px;
-}
-
 .profile-layout {
   display: grid;
   gap: 16px;
@@ -395,8 +390,6 @@ body.is-authed .nav-user-badge {
     grid-template-columns: 1fr;
   }
 
-  .guest-home-grid { grid-template-columns: 1fr; }
-  .food-orbit { width: min(300px, 100%); }
 }
 
 [data-guest-only] { display: none; }
@@ -511,6 +504,17 @@ body:not(.is-authed) [data-authed-only] { display: none !important; }
 }
 
 .food-orbit-face svg { width: 100%; height: 100%; display: block; }
+
+/* Kept after the base guest rules so it wins the cascade on phones. */
+@media (max-width: 900px) {
+  .guest-home-grid { grid-template-columns: 1fr; }
+  .food-orbit { width: min(280px, 80%); }
+}
+
+/* iOS Safari zooms the page when a focused field is under 16px. */
+@media (max-width: 900px) {
+  input, select, textarea { font-size: 16px !important; }
+}
 
 @keyframes food-spin { to { transform: rotate(360deg); } }
 
