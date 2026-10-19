@@ -7,6 +7,7 @@
 @import "./nutrition.css";
 @import "./auth.css";
 @import "./admin.css";
+@import "./catering.css";
 
 @source "../index.html";
 @source "../admin.html";

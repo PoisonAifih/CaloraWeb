@@ -39,6 +39,7 @@
         <div class="nav-tabs" id="nav-tabs-container">
           <div class="nav-tab-indicator" id="nav-tab-indicator"></div>
           <button class="nav-tab-btn" data-tab="dashboard" id="tab-dashboard-btn" onclick="switchTab('dashboard')">Home</button>
+          <button class="nav-tab-btn" data-tab="catering" id="tab-catering-btn" onclick="switchTab('catering')">Catering</button>
           <button class="nav-tab-btn" data-tab="nutrition" id="tab-nutrition-btn" onclick="switchTab('nutrition')">Food</button>
           <button class="nav-tab-btn" data-tab="training" id="tab-training-btn" onclick="switchTab('training')">Workout</button>
           <button class="nav-tab-btn" data-tab="trends" id="tab-trends-btn" onclick="switchTab('trends')">Trends</button>
@@ -56,7 +57,8 @@
 
   <nav class="bottom-nav" aria-label="Primary">
     <button class="nav-tab-btn" data-tab="dashboard" type="button" onclick="switchTab('dashboard')"><i class="ph ph-house" aria-hidden="true"></i><span>Home</span></button>
-    <button class="nav-tab-btn" data-tab="nutrition" type="button" onclick="switchTab('nutrition')"><i class="ph ph-fork-knife" aria-hidden="true"></i><span>Food</span></button>
+    <button class="nav-tab-btn" data-tab="catering" type="button" onclick="switchTab('catering')"><i class="ph ph-fork-knife" aria-hidden="true"></i><span>Catering</span></button>
+    <button class="nav-tab-btn" data-tab="nutrition" type="button" onclick="switchTab('nutrition')"><i class="ph ph-bowl-food" aria-hidden="true"></i><span>Food</span></button>
     <button class="nav-tab-btn" data-tab="training" type="button" onclick="switchTab('training')"><i class="ph ph-barbell" aria-hidden="true"></i><span>Workout</span></button>
     <button class="nav-tab-btn" data-tab="trends" type="button" onclick="switchTab('trends')"><i class="ph ph-chart-line" aria-hidden="true"></i><span>Trends</span></button>
     <button class="nav-tab-btn" data-tab="profile" type="button" onclick="switchTab('profile')"><i class="ph ph-user" aria-hidden="true"></i><span>Profile</span></button>
@@ -571,6 +573,10 @@
       </div>
       </div>
     </div><!-- /tab-nutrition -->
+
+    <div class="tab-panel" id="tab-catering">
+      <div id="catering-root"></div>
+    </div>
 
     <div class="tab-panel" id="tab-profile">
       <section data-guest-only>

@@ -317,18 +317,24 @@ body.is-authed .nav-user-badge {
 
   .nav-right { margin-left: auto; }
 
-  .page { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  .page { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+
+  nav.app-nav {
+    top: calc(68px + env(safe-area-inset-top));
+    margin-top: calc(68px + env(safe-area-inset-top));
+    padding-top: 0;
+  }
 
   .bottom-nav {
     display: flex;
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 0;
+    top: 0;
     z-index: 200;
     background: var(--nav);
-    border-top: 1px solid rgba(243, 232, 204, 0.2);
-    padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+    border-bottom: 1px solid rgba(243, 232, 204, 0.2);
+    padding: calc(8px + env(safe-area-inset-top)) 4px 8px;
   }
 
   .bottom-nav .nav-tab-btn {
@@ -356,7 +362,7 @@ body.is-authed .nav-user-badge {
     justify-content: center;
     position: fixed;
     right: 16px;
-    bottom: calc(78px + env(safe-area-inset-bottom));
+    bottom: calc(16px + env(safe-area-inset-bottom));
     z-index: 210;
     width: 56px;
     height: 56px;

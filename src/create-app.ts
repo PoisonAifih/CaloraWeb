@@ -7,7 +7,7 @@ import { AppModule } from './app.module';
 import { HttpErrorFilter } from './common/http-exception.filter';
 
 const ROOT = process.cwd();
-const SPA_ROUTES = new Set(['/', '/dashboard', '/training', '/nutrition', '/trends', '/profile']);
+const SPA_ROUTES = new Set(['/', '/dashboard', '/catering', '/training', '/nutrition', '/trends', '/profile']);
 const ROOT_ASSETS = new Set(['index.html', 'admin.html']);
 
 export async function createApp() {

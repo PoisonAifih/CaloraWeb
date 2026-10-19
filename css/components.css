@@ -307,7 +307,7 @@
   .toast-container {
     left: 12px;
     right: 12px;
-    bottom: calc(88px + env(safe-area-inset-bottom));
+    bottom: calc(16px + env(safe-area-inset-bottom));
   }
 }
 
