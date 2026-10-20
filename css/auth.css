@@ -54,8 +54,8 @@
 .login-close:hover { background: var(--cream); }
 
 .login-mark {
-  width: 104px;
-  height: 104px;
+  width: auto;
+  height: 116px;
 }
 
 .login-title {

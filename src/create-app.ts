@@ -20,7 +20,7 @@ export async function createApp() {
     if (req.method !== 'GET' || req.path.startsWith('/api/')) return next();
     if (SPA_ROUTES.has(req.path)) return res.sendFile(join(ROOT, 'index.html'));
     const relative = decodeURIComponent(req.path.replace(/^\/+/, ''));
-    const allowed = ROOT_ASSETS.has(relative) || relative.startsWith('css/') || relative.startsWith('js/');
+    const allowed = ROOT_ASSETS.has(relative) || relative.startsWith('css/') || relative.startsWith('js/') || relative.startsWith('assets/');
     const file = join(ROOT, relative);
     if (!allowed || relative.split('/').some(part => part.startsWith('.')) || !existsSync(file)) {
       return res.status(404).json({ error: 'Not found' });

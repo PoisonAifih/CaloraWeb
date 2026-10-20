@@ -17,6 +17,7 @@ COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/index.html /app/admin.html ./
 COPY --from=build /app/css ./css
 COPY --from=build /app/js ./js
+COPY --from=build /app/assets ./assets
 COPY scripts/api-entrypoint.sh /api-entrypoint.sh
 RUN chmod +x /api-entrypoint.sh && chown -R calora:calora /app
 USER calora
