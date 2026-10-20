@@ -1,6 +1,6 @@
-const loginForm = document.getElementById('admin-login');
+import { initTheme } from './ui/theme.js';
+
 const content = document.getElementById('admin-content');
-const error = document.getElementById('admin-login-error');
 const signOut = document.getElementById('admin-signout');
 const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character]));
 const MEAL_LABELS = { BREAKFAST:'Breakfast', LUNCH:'Lunch', DINNER:'Dinner', SNACK:'Snack' };
@@ -24,11 +24,13 @@ async function loadMenus() {
 
 async function loadDashboard() {
   const response = await fetch('/api/admin/dashboard');
-  if (!response.ok) return false;
+  // Admins sign in on the main login; anyone else goes back to the app.
+  if (!response.ok) {
+    location.replace('/');
+    return false;
+  }
   const data = await response.json();
-  loginForm.hidden = true;
   content.hidden = false;
-  signOut.hidden = false;
   await loadMenus();
   const menuNames = new Map(menus.map(menu => [menu.id, menu.name]));
   const labels = { tomorrowOrders:'Tomorrow orders', confirmedPlans:'Confirmed', awaitingReview:'Awaiting review', lunchPortions:'Lunch portions' };
@@ -175,19 +177,13 @@ function renderQrCodes() {
 field('qr-filter').addEventListener('change', renderQrCodes);
 
 // ── Session ──────────────────────────────────────────────────────────────────
-loginForm.addEventListener('submit', async event => {
-  event.preventDefault();
-  error.textContent = '';
-  const response = await fetch('/api/session', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:document.getElementById('admin-name').value,password:document.getElementById('admin-password').value}) });
-  if (!response.ok || !(await loadDashboard())) error.textContent = 'This account does not have catering-admin access.';
-});
-
 signOut.addEventListener('click', async () => {
   try { await fetch('/api/session', { method:'DELETE' }); } catch {}
-  location.reload();
+  location.replace('/');
 });
 
 let initialView = 'kitchen';
 try { initialView = localStorage.getItem('calora-admin-view') || 'kitchen'; } catch {}
 showView(TITLES[initialView] ? initialView : 'kitchen');
+initTheme();
 loadDashboard();

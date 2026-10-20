@@ -5,7 +5,7 @@
 .pin-overlay {
   position: fixed;
   inset: 0;
-  background: #e6eadc;
+  background: var(--backdrop);
   z-index: 10000;
   display: flex;
   align-items: center;
@@ -56,6 +56,7 @@
 .login-mark {
   width: auto;
   height: 116px;
+  filter: var(--logo-filter);
 }
 
 .login-title {
@@ -63,7 +64,7 @@
   font-size: 44px;
   line-height: 1;
   text-align: center;
-  color: var(--forest);
+  color: var(--heading);
 }
 
 .login-dashes {
@@ -110,7 +111,7 @@
   transition: border-color var(--t-fast);
 }
 
-.login-input:focus { border-color: var(--forest); }
+.login-input:focus { border-color: var(--heading); }
 
 .login-password {
   position: relative;
@@ -138,7 +139,7 @@
   margin-top: -8px;
   border: 0;
   background: transparent;
-  color: var(--forest);
+  color: var(--heading);
   font-family: var(--font-body);
   font-size: 15px;
   font-weight: 700;
@@ -184,7 +185,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #e4d6b1;
+  background: var(--sand);
 }
 
 .login-social {
@@ -200,7 +201,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  border: 1px solid #e4d6b1;
+  border: 1px solid var(--sand);
   border-radius: var(--r-md);
   background: transparent;
   color: var(--ink);
@@ -219,7 +220,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--cream);
-  color: var(--forest);
+  color: var(--heading);
   font-size: 13px;
   font-weight: 700;
 }

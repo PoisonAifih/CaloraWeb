@@ -21,7 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-  <link rel="stylesheet" href="css/app.css?v=2.4.0">
+  <link rel="stylesheet" href="css/app.css?v=2.5.0">
+  <script>
+    try {
+      var theme = localStorage.getItem('calora-theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
   <script>
     if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
       document.documentElement.classList.add('is-ios');
@@ -47,6 +53,7 @@
         </div>
       </div>
       <div class="nav-right">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Mode gelap"><i class="ph ph-moon" aria-hidden="true"></i></button>
         <button class="btn btn-fill nav-signin" id="nav-signin" type="button" onclick="openLoginOverlay()">Sign in</button>
         <div class="nav-user-badge">
           <span class="user-name" id="nav-user-name">Guest</span>
@@ -643,6 +650,12 @@
         <section class="profile-card">
           <h2 class="editorial">Account</h2>
           <p class="text-sm text-ink-muted" id="profile-account-name">Guest</p>
+          <div class="theme-choice" role="group" aria-label="Tampilan">
+            <span>Tampilan</span>
+            <button type="button" data-theme-choice="system" aria-pressed="true">Sistem</button>
+            <button type="button" data-theme-choice="light" aria-pressed="false">Terang</button>
+            <button type="button" data-theme-choice="dark" aria-pressed="false">Gelap</button>
+          </div>
           <div class="form-actions">
             <a class="btn btn-ghost android-download" href="https://github.com/PoisonAifih/CaloraApp-releases/releases/latest/download/app-release.apk"><i class="ph ph-android-logo" aria-hidden="true"></i>Android app</a>
             <button class="btn btn-ghost" id="profile-session-button" type="button" onclick="lockApp()">Sign out</button>

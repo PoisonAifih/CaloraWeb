@@ -42,6 +42,10 @@ export class MenusService {
     return this.prisma.menu.findMany({ orderBy: [{ active: 'desc' }, { mealType: 'asc' }, { name: 'asc' }] });
   }
 
+  listActive() {
+    return this.prisma.menu.findMany({ where: { active: true }, orderBy: [{ mealType: 'asc' }, { name: 'asc' }] });
+  }
+
   async get(id: string) {
     const menu = await this.prisma.menu.findUnique({ where: { id } });
     if (!menu) throw httpError('Menu not found', HttpStatus.NOT_FOUND);

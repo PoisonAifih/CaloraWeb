@@ -15,6 +15,14 @@
   --sunshine:    #ffc926;
   --tomato:      #d52518;
   --matcha:      #0d3a1f;
+  --on-forest:   #f3e8cc;
+  --sand:        #e4d6b1;
+  --ok-soft:     #dfeedd;
+  --warn-soft:   #fbe3df;
+  --backdrop:    #e6eadc;
+  --nav-glass:   rgba(250, 250, 245, 0.92);
+  --logo-filter: none;
+  color-scheme: light;
 
   /* Roles */
   --bg:          var(--canvas);
@@ -28,7 +36,7 @@
   --ink:         var(--charcoal);
   --ink-muted:   var(--muted-green);
   --ink-faint:   var(--muted-green);
-  --heading:     var(--forest);
+  --heading:     #18542a;
   --nav:         var(--forest);
   --nav-ink:     var(--cream);
 
@@ -57,6 +65,59 @@
   --ease-base:   cubic-bezier(0.25, 1, 0.5, 1);
   --t-fast: 200ms;
   --t-base: 400ms;
+}
+
+/* Dark theme: follows the system unless the user picked one (html[data-theme]). */
+:root[data-theme="dark"] {
+  --forest:      #1f4d2c;
+  --carrot:      #f96015;
+  --carrot-deep: #ff7a33;
+  --cream:       #262c23;
+  --canvas:      #121511;
+  --charcoal:    #ecebe2;
+  --muted-green: #a3af9f;
+  --kiwi:        #a9cc1a;
+  --sunshine:    #ffc926;
+  --tomato:      #ff6b5b;
+  --matcha:      #2c6b3d;
+  --on-forest:   #eef3e6;
+  --sand:        #353c30;
+  --ok-soft:     #1f3a26;
+  --warn-soft:   #4a201b;
+  --backdrop:    #0b0d0a;
+  --nav-glass:   rgba(18, 21, 17, 0.92);
+  --logo-filter: invert(1);
+  --heading:     #8fd19e;
+  --line:        rgba(236, 235, 226, 0.12);
+  --shadow:      0 6px 20px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --forest:      #1f4d2c;
+    --carrot:      #f96015;
+    --carrot-deep: #ff7a33;
+    --cream:       #262c23;
+    --canvas:      #121511;
+    --charcoal:    #ecebe2;
+    --muted-green: #a3af9f;
+    --kiwi:        #a9cc1a;
+    --sunshine:    #ffc926;
+    --tomato:      #ff6b5b;
+    --matcha:      #2c6b3d;
+    --on-forest:   #eef3e6;
+    --sand:        #353c30;
+    --ok-soft:     #1f3a26;
+    --warn-soft:   #4a201b;
+    --backdrop:    #0b0d0a;
+    --nav-glass:   rgba(18, 21, 17, 0.92);
+    --logo-filter: invert(1);
+    --heading:     #8fd19e;
+    --line:        rgba(236, 235, 226, 0.12);
+    --shadow:      0 6px 20px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
 }
 
 *, *::before, *::after {

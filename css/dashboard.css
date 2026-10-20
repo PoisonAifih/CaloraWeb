@@ -351,14 +351,14 @@
   border-radius: var(--r-lg);
   background: var(--forest);
   border-color: var(--forest);
-  color: var(--cream);
+  color: var(--on-forest);
   box-shadow: var(--shadow);
 }
 
-.dash-catering .dash-card-label { color: var(--cream); opacity: 0.8; }
+.dash-catering .dash-card-label { color: var(--on-forest); opacity: 0.8; }
 .dash-catering h2.editorial { color: var(--canvas); }
-.dash-catering .rating-badge { background: var(--cream); color: var(--forest); border-color: transparent; }
-.dash-catering-adjustment { color: var(--cream); }
+.dash-catering .rating-badge { background: var(--cream); color: var(--heading); border-color: transparent; }
+.dash-catering-adjustment { color: var(--on-forest); }
 
 .dash-catering-head {
   display: flex;
@@ -505,7 +505,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--forest);
-  color: var(--cream);
+  color: var(--on-forest);
   font-size: 20px;
 }
 
@@ -518,7 +518,7 @@
   font-size: 22px;
   font-weight: 700;
   line-height: 1.25;
-  color: var(--forest);
+  color: var(--heading);
 }
 
 .home-hello p {
@@ -533,10 +533,10 @@
   gap: 8px;
   height: 46px;
   padding: 0 16px;
-  border: 1px solid #e4d6b1;
+  border: 1px solid var(--sand);
   border-radius: 999px;
   background: var(--cream);
-  color: var(--forest);
+  color: var(--heading);
   font-family: var(--font-body);
   font-size: 17px;
   font-weight: 700;
@@ -559,7 +559,7 @@
   height: 54px;
   display: grid;
   place-items: center;
-  border: 1px solid #e4d6b1;
+  border: 1px solid var(--sand);
   border-radius: 50%;
   background: transparent;
   color: var(--ink);
@@ -602,7 +602,7 @@
 .home-ring-track { stroke: var(--cream); }
 
 .home-ring-fill {
-  stroke: var(--forest);
+  stroke: var(--heading);
   stroke-linecap: round;
   stroke-dasharray: 0 100;
   transition: stroke-dasharray 700ms var(--ease-base), stroke 200ms;
@@ -652,14 +652,14 @@
   margin-top: 10px;
   padding: 8px 14px;
   border-radius: 999px;
-  background: #dfeedd;
-  color: var(--forest);
+  background: var(--ok-soft);
+  color: var(--heading);
   font-size: 14px;
   font-weight: 600;
 }
 
 .home-remaining-pill.is-over {
-  background: #fbe3df;
+  background: var(--warn-soft);
   color: var(--tomato);
 }
 
@@ -726,7 +726,7 @@
   padding: 6px 14px;
   border-radius: 999px;
   background: var(--forest);
-  color: var(--cream);
+  color: var(--on-forest);
   font-size: 14px;
   letter-spacing: 0.06em;
 }
@@ -763,7 +763,7 @@
   padding: 6px 12px;
   border-radius: 8px;
   background: var(--cream);
-  color: var(--forest);
+  color: var(--heading);
   font-size: 14px;
   font-weight: 600;
 }
@@ -815,7 +815,7 @@
 
 .other-links button + button { border-top: 1px solid var(--cream); }
 .other-links button:hover { background: var(--cream); }
-.other-links i:first-child { font-size: 20px; color: var(--forest); }
+.other-links i:first-child { font-size: 20px; color: var(--heading); }
 .other-links i:last-child { margin-left: auto; color: var(--ink-muted); }
 
 @media (min-width: 901px) {

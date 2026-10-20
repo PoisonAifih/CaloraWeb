@@ -12,6 +12,7 @@ import { renderWorkouts, syncTimers, setWorkoutLogFilter, syncWebhookWorkouts } 
 import { renderFoodLog, syncRemoteFoodLogs } from './features/nutrition.js';
 import { updateTrendChart, updateWorkoutChart, changeChartTimeframe } from './features/analytics.js';
 import { renderTrends, saveWeightLog } from './features/trends.js';
+import { initTheme } from './ui/theme.js';
 
 // ── Global handlers for HTML inline onclick attributes ────────────────────────
 window.goHome = () => switchTab('dashboard');
@@ -102,6 +103,12 @@ if (!window.__FITVAULT_BOOTSTRAPPED__) {
     });
 
     document.addEventListener('auth:required', openLoginOverlay);
+    document.addEventListener('theme:changed', () => {
+      if (!state.currentUser) return;
+      updateTrendChart();
+      updateWorkoutChart();
+    });
+    initTheme();
 
     bootApp();
   });

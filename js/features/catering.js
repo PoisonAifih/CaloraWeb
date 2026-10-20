@@ -1,6 +1,7 @@
 // Catering
 
 import { requireAuth } from '../ui/guest.js';
+import { state as appState } from '../state.js';
 
 const KEY = 'calora-catering';
 
@@ -17,8 +18,41 @@ const TOPUPS = [
 
 const WEEKS = [1, 2, 4];
 
+const MEAL_LABELS = { BREAKFAST: 'Sarapan', LUNCH: 'Makan siang', DINNER: 'Makan malam', SNACK: 'Camilan' };
+
 let sheet = null;
 let bound = false;
+let menus = null;
+let menusLoading = false;
+
+async function loadMenus() {
+  if (menus || menusLoading) return;
+  menusLoading = true;
+  try {
+    const response = await fetch('/api/menus');
+    if (response.ok) menus = await response.json();
+  } catch {}
+  menusLoading = false;
+  if (menus) renderCatering();
+}
+
+function menusHtml() {
+  if (!menus) return '<p class="catering-menus-empty">Memuat menu…</p>';
+  if (!menus.length) return '<p class="catering-menus-empty">Belum ada menu aktif.</p>';
+  return `<div class="catering-menus">${menus.map(menu => `
+    <article class="catering-menu">
+      <div class="catering-menu-top">
+        <span class="catering-menu-meal">${escapeHtml(MEAL_LABELS[menu.mealType] || menu.mealType)}</span>
+        <span class="catering-menu-kcal">${Math.round(menu.calories)} kcal</span>
+      </div>
+      <h3>${escapeHtml(menu.name)}</h3>
+      <div class="catering-menu-chips">
+        <span>Protein ${Math.round(menu.proteinG)}g</span>
+        <span>Karbo ${Math.round(menu.carbsG)}g</span>
+        <span>Lemak ${Math.round(menu.fatG)}g</span>
+      </div>
+    </article>`).join('')}</div>`;
+}
 
 function load() {
   const fallback = {
@@ -121,6 +155,8 @@ function pageHtml(state) {
           </button>
         `).join('')}
       </div>
+      <h2 class="editorial catering-section-title">Menu yang tersedia</h2>
+      ${menusHtml()}
     </section>
     ${topupHtml(state)}
     ${redeemHtml(state)}
@@ -223,6 +259,7 @@ export function renderCatering() {
   if (!root) return;
   const state = load();
   root.innerHTML = pageHtml(state);
+  if (appState.currentUser) loadMenus();
   if (bound) return;
   bound = true;
   root.addEventListener('click', event => {

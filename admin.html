@@ -5,22 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calora — Catering Operations</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="css/app.css?v=2.4.0">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="css/app.css?v=2.5.0">
+  <script>
+    try {
+      var theme = localStorage.getItem('calora-theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
 </head>
 <body class="admin-body bg-bg text-ink font-sans">
   <main class="admin-shell mx-auto max-w-6xl p-6">
     <header class="admin-head mb-8 flex items-center justify-between">
       <div><p class="dash-card-label">Calora operations</p><h1 class="editorial text-3xl" id="admin-title">Tomorrow's Kitchen</h1></div>
-      <button class="btn btn-ghost" id="admin-signout" type="button" hidden>Sign out</button>
+      <div class="admin-head-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Mode gelap"><i class="ph ph-moon" aria-hidden="true"></i></button>
+        <button class="btn btn-ghost" id="admin-signout" type="button">Sign out</button>
+      </div>
     </header>
-
-    <form id="admin-login" class="admin-login max-w-md space-y-3">
-      <h2 class="editorial text-2xl">Admin sign in</h2>
-      <label for="admin-name">Username</label><input id="admin-name" autocomplete="username" required>
-      <label for="admin-password">Password</label><input id="admin-password" type="password" autocomplete="current-password" required>
-      <button class="btn btn-fill" type="submit">Sign in</button>
-      <p id="admin-login-error" role="alert"></p>
-    </form>
 
     <div id="admin-content" hidden>
       <nav class="admin-tabs" aria-label="Admin pages">
@@ -87,6 +89,6 @@
       </section>
     </div>
   </main>
-  <script type="module" src="js/admin.js?v=2.0.0"></script>
+  <script type="module" src="js/admin.js?v=2.1.0"></script>
 </body>
 </html>

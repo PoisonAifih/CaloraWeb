@@ -19,7 +19,7 @@
 
 .catering-card {
   background: var(--forest);
-  color: var(--cream);
+  color: var(--on-forest);
   border-radius: var(--r-lg);
   padding: 20px;
   box-shadow: var(--shadow);
@@ -74,7 +74,7 @@
 
 .catering-note {
   margin-top: 6px;
-  color: var(--cream);
+  color: var(--on-forest);
   opacity: 0.8;
   font-size: 13px;
 }
@@ -116,7 +116,7 @@
 
 .catering-pill {
   background: var(--matcha);
-  color: var(--cream);
+  color: var(--on-forest);
   border-radius: var(--r-pill);
   padding: 6px 12px;
   font-size: 12px;
@@ -175,13 +175,13 @@
 .catering-pack.is-selected {
   background: var(--forest);
   border-color: var(--forest);
-  color: var(--cream);
+  color: var(--on-forest);
 }
 
 .catering-pack.is-selected strong,
 .catering-pack.is-selected span,
 .catering-pack.is-selected small {
-  color: var(--cream);
+  color: var(--on-forest);
 }
 
 /* Sheets */
@@ -399,4 +399,59 @@
   .catering-sheet-card {
     border-radius: 20px;
   }
+}
+
+/* ── Available menus ────────────────────────────────────────────────────── */
+.catering-menus {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.catering-menu {
+  padding: 16px;
+  border: 1px solid var(--cream);
+  border-radius: var(--r-lg);
+  background: var(--canvas);
+}
+
+.catering-menu-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.catering-menu-meal {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--heading);
+}
+
+.catering-menu h3 {
+  margin: 6px 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.catering-menu-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.catering-menu-chips span {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--heading);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.catering-menus-empty {
+  color: var(--ink-muted);
 }

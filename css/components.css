@@ -52,7 +52,7 @@
 /* Secondary action: cream fill, forest text */
 .btn-ghost {
   background: var(--cream);
-  color: var(--forest);
+  color: var(--heading);
   border-color: transparent;
   border-radius: var(--r-pill);
   font-weight: 600;
