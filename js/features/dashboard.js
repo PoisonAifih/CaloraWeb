@@ -4,24 +4,37 @@
 // Called by: router.js (on tab switch), main.js (on auth/data events), auth.js (after login)
 //
 // ELEMENT ID MAP (index.html #tab-dashboard):
-//   Greeting row:         #dash-date-str, #dash-greeting
-//   Calorie hero card:    #dash-kcal-consumed, #dash-kcal-fill, #dash-kcal-pct,
-//                         #dash-kcal-target, #dash-rating-badge
+//   Greeting row:         #dash-greeting, #home-avatar, #home-token-balance
+//   Calorie ring card:    #dash-kcal-consumed, #dash-kcal-target, #home-ring-fill,
+//                         #dash-tile-remaining, #home-remaining-pill
 //   Macro progress bars:  #dash-p-val/#dash-p-fill, #dash-c-val/#dash-c-fill,
-//                         #dash-f-val/#dash-f-fill, #dash-s-val/#dash-s-fill
+//                         #dash-f-val/#dash-f-fill
+//   Tomorrow's catering:  #catering-date, #catering-lunch, #catering-lunch-meta,
+//                         #catering-lunch-macros, #catering-explanations
 //   Training hero card:   #dash-wk-sessions, #dash-wk-sets, #dash-wk-duration,
 //                         #dash-wk-exercises, #dash-last-session-label
 //   Stat tiles:           #dash-tile-last-session, #dash-tile-last-session-sub,
-//                         #dash-tile-sets, #dash-tile-meals, #dash-tile-meals-sub,
-//                         #dash-tile-remaining
+//                         #dash-tile-sets
 //   Preview lists:        #dash-food-preview, #dash-workout-preview
 //
 // IMPORTANT: All element IDs above must exist in index.html or their update is silently skipped.
 // ==========================================================================
 
 import { state } from '../state.js';
-import { esc, calcNutriGrade, getWorkoutTimestamp } from '../utils.js';
+import { esc, getWorkoutTimestamp } from '../utils.js';
 import { calculateDailyNutritionState, calculateNutritionTargets } from '../domain/nutrition.mjs';
+import { getTokenBalance } from './catering.js';
+import { showToast } from '../ui/toast.js';
+
+function initials(name) {
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return 'C';
+  return (parts[0][0] + (parts[1]?.[0] || '')).toUpperCase();
+}
+
+export function showNotifications() {
+  showToast('Belum ada notifikasi', 'info');
+}
 
 export async function syncAdaptiveDashboard() {
   if (!state.currentUser) return;
@@ -38,15 +51,15 @@ export async function syncAdaptiveDashboard() {
 // Safe to call at any time — all DOM lookups are guarded with null checks.
 export function renderDashboardOverview() {
   // ── GREETING ROW ──────────────────────────────────────────────────────────
+  const name = state.currentUser || '';
   const greetingEl = document.getElementById('dash-greeting');
-  if (greetingEl) greetingEl.textContent = state.currentUser || 'Calora user';
+  if (greetingEl) greetingEl.textContent = name ? `Halo, ${name.split(' ')[0]} 👋` : 'Halo 👋';
 
-  const dateEl = document.getElementById('dash-date-str');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('en-GB', {
-      weekday: 'long', day: 'numeric', month: 'long'
-    });
-  }
+  const avatarEl = document.getElementById('home-avatar');
+  if (avatarEl) avatarEl.textContent = initials(name);
+
+  const tokenEl = document.getElementById('home-token-balance');
+  if (tokenEl) tokenEl.textContent = getTokenBalance();
 
   // ── FOOD TOTALS (today only) ────────────────────────────────────────────────
   const todayStr = new Date().toDateString();
@@ -58,27 +71,27 @@ export function renderDashboardOverview() {
   const daily = calculateDailyNutritionState(state.foodLog, targets);
   const food = daily.consumed;
 
-  // ── CALORIE HERO CARD ──────────────────────────────────────────────────────
+  // ── CALORIE RING CARD ──────────────────────────────────────────────────────
   const rawPct = Math.round((food.kcal / targets.kcal) * 100);
   const pct = Math.min(100, rawPct);
-  const kcalState = rawPct > 100 ? 'over' : rawPct >= 90 ? 'met' : '';
+  const over = rawPct > 100;
 
   const kcalEl = document.getElementById('dash-kcal-consumed');
-  const fillEl = document.getElementById('dash-kcal-fill');
-  const pctEl  = document.getElementById('dash-kcal-pct');
+  const ringEl = document.getElementById('home-ring-fill');
   const tgtEl  = document.getElementById('dash-kcal-target');
-  if (kcalEl) kcalEl.textContent = food.kcal.toLocaleString('id-ID');
-  if (pctEl)  { pctEl.textContent = `${rawPct}%`; pctEl.dataset.state = kcalState; }
-  if (fillEl) fillEl.dataset.state = kcalState;
-  if (tgtEl)  tgtEl.textContent  = `of ${targets.kcal.toLocaleString('id-ID')} kcal target`;
-  // Animate the bar width after a tick so CSS transition fires
-  if (fillEl) setTimeout(() => { fillEl.style.width = `${pct}%`; }, 50);
-
-  const gradeInfo = calcNutriGrade(food.kcal, targets.kcal, food.protein, targets.protein);
-  const badgeEl   = document.getElementById('dash-rating-badge');
-  if (badgeEl) {
-    badgeEl.textContent = `Grade ${gradeInfo.grade}`;
-    badgeEl.className   = `rating-badge ${gradeInfo.cls}`;
+  const pillEl = document.getElementById('home-remaining-pill');
+  if (kcalEl) kcalEl.textContent = food.kcal.toLocaleString('en-US');
+  if (tgtEl)  tgtEl.textContent  = `/ ${targets.kcal.toLocaleString('en-US')} kcal`;
+  if (ringEl) {
+    ringEl.classList.toggle('is-over', over);
+    // Set after a tick so the CSS transition runs
+    setTimeout(() => { ringEl.style.strokeDasharray = `${pct} 100`; }, 50);
+  }
+  if (pillEl) {
+    pillEl.classList.toggle('is-over', over);
+    pillEl.innerHTML = over
+      ? '<i class="ph ph-warning" aria-hidden="true"></i>kcal berlebih'
+      : '<i class="ph ph-check" aria-hidden="true"></i>kcal tersisa';
   }
 
   // ── MACRO PROGRESS BARS ────────────────────────────────────────────────────
@@ -92,7 +105,7 @@ export function renderDashboardOverview() {
   ].forEach(({ key, val, valId, fillId }) => {
     const valEl  = document.getElementById(valId);
     const fillEl = document.getElementById(fillId);
-    if (valEl)  valEl.textContent  = `${Math.round(val)} / ${macroTargets[key]}g`;
+    if (valEl)  valEl.textContent  = `${Math.round(val)}g / ${macroTargets[key]}g`;
     if (fillEl) setTimeout(() => {
       fillEl.style.width = `${Math.min(100, Math.round((val / macroTargets[key]) * 100))}%`;
     }, 80);
@@ -145,26 +158,31 @@ export function renderDashboardOverview() {
   if (mealsSub) mealsSub.textContent = todayFood.length === 1 ? 'entry logged' : 'entries logged';
 
   const remainEl = document.getElementById('dash-tile-remaining');
-  if (remainEl) remainEl.textContent = daily.remaining.kcal.toLocaleString('id-ID');
+  if (remainEl) remainEl.textContent = Math.abs(targets.kcal - food.kcal).toLocaleString('en-US');
 
   // ── TOMORROW'S CATERING (server-owned rolling 7-day decision) ─────────────
   const plan = state.dashboard?.tomorrow;
   const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  setText('catering-date', tomorrow.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' }));
+  const lunch = plan?.lunch;
+  const chipsEl = document.getElementById('catering-lunch-macros');
+  if (lunch) {
+    setText('catering-lunch', lunch.name || 'Menu belum tersedia');
+    const metaEl = document.getElementById('catering-lunch-meta');
+    if (metaEl) metaEl.innerHTML = `Makan siang · <strong>${Number(lunch.calories).toLocaleString('en-US')} kcal</strong>`;
+    if (chipsEl) chipsEl.innerHTML = [
+      ['Protein', lunch.proteinG], ['Karbo', lunch.carbsG], ['Lemak', lunch.fatG]
+    ].filter(([, grams]) => grams != null).map(([label, grams]) =>
+      `<span class="home-chip">${label} ${Math.round(grams)}g</span>`
+    ).join('');
+  } else {
+    setText('catering-lunch', 'Belum ada menu');
+    setText('catering-lunch-meta', 'Menu besok muncul setelah paket catering aktif.');
+    if (chipsEl) chipsEl.innerHTML = '';
+  }
   if (plan) {
-    setText('catering-daily-target', `${Number(plan.effectiveDailyTarget).toLocaleString('id-ID')} kcal`);
-    setText('catering-allocation', `${Number(plan.cateringAllocation).toLocaleString('id-ID')} kcal`);
-    setText('catering-lunch', plan.lunch?.name || 'Menu unavailable');
-    setText('catering-lunch-macros', plan.lunch ? `${plan.lunch.calories} kcal · ${plan.lunch.proteinG}g protein` : 'Check dietary constraints');
-    const tonight = state.dashboard?.tonight;
-    setText('catering-tonight', tonight?.meal?.name || 'Log food to get a tonight recommendation');
-    setText('catering-tonight-macros', tonight?.meal
-      ? `${tonight.meal.kcal} kcal · ${tonight.meal.protein}g protein · remaining ${tonight.constraints?.kcal?.max ?? 0} kcal`
-      : tonight?.constraints ? `Remaining ${tonight.constraints.kcal?.max || 0} kcal tonight` : '');
-    const goal = state.dashboard?.goalSummary;
-    setText('dash-goal-label', goal?.label || 'Set a weight target');
-    setText('dash-goal-target', goal ? `${goal.currentKg} kg → ${goal.targetKg} kg` : '');
-    setText('catering-confidence', `${plan.confidence.toLowerCase()} confidence · ${plan.status.toLowerCase()}`);
-    setText('catering-adjustment', plan.adaptations?.length ? plan.adaptations.join(' · ').replaceAll('_', ' ') : 'Calories unchanged');
     const explanations = document.getElementById('catering-explanations');
     if (explanations) explanations.innerHTML = (plan.explanations || []).map(item =>
       `<p class="dash-insight"><strong>${esc(item.code.replaceAll('_', ' '))}</strong><br>${esc(item.message)}</p>`

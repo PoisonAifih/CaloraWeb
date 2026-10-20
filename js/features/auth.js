@@ -6,8 +6,6 @@ import { renderDashboardOverview, syncAdaptiveDashboard } from './dashboard.js';
 import { openScannedMenu, renderFoodLog, syncRemoteFoodLogs } from './nutrition.js';
 import { syncWebhookWorkouts } from './workout.js';
 
-let _loginUsername = '';
-
 // Admin accounts only use the catering console, not the personal tracker.
 function redirectAdmin(user) {
   if (user?.role !== 'ADMIN') return false;
@@ -53,51 +51,53 @@ export function closeLoginOverlay() {
 }
 
 export function openLoginOverlay() {
-  _loginUsername = '';
-  document.getElementById('login-step-1')?.classList.remove('login-step--hidden');
-  document.getElementById('login-step-2')?.classList.add('login-step--hidden');
   document.getElementById('login-error-msg').textContent = '';
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
+  setPasswordVisible(false);
   document.getElementById('pin-lock-overlay')?.classList.add('open');
   setTimeout(() => document.getElementById('login-username')?.focus(), 100);
 }
 
-export function submitUsername() {
-  const value = document.getElementById('login-username')?.value.trim();
-  if (!value) return;
-  _loginUsername = value;
-  document.getElementById('login-step-1')?.classList.add('login-step--hidden');
-  document.getElementById('login-step-2')?.classList.remove('login-step--hidden');
-  document.getElementById('login-error-msg').textContent = '';
-  setTimeout(() => document.getElementById('login-password')?.focus(), 50);
+function setPasswordVisible(visible) {
+  const input = document.getElementById('login-password');
+  const button = document.querySelector('.login-eye');
+  if (input) input.type = visible ? 'text' : 'password';
+  if (button) {
+    button.setAttribute('aria-pressed', String(visible));
+    button.setAttribute('aria-label', visible ? 'Sembunyikan password' : 'Tampilkan password');
+    button.innerHTML = `<i class="ph ${visible ? 'ph-eye-slash' : 'ph-eye'}" aria-hidden="true"></i>`;
+  }
 }
 
-export function loginGoBack() {
-  _loginUsername = '';
-  document.getElementById('login-step-1')?.classList.remove('login-step--hidden');
-  document.getElementById('login-step-2')?.classList.add('login-step--hidden');
-  document.getElementById('login-error-msg').textContent = '';
-  setTimeout(() => document.getElementById('login-username')?.focus(), 50);
+export function togglePasswordVisibility() {
+  setPasswordVisible(document.getElementById('login-password')?.type === 'password');
 }
 
-export async function submitPassword() {
+export function loginComingSoon(feature) {
+  showToast(`${feature} belum tersedia`, 'info');
+}
+
+export async function submitLogin(event) {
+  event?.preventDefault();
+  const usernameInput = document.getElementById('login-username');
   const passwordInput = document.getElementById('login-password');
   const button = document.getElementById('login-unlock-btn');
   const error = document.getElementById('login-error-msg');
-  if (!passwordInput?.value || !_loginUsername || button.disabled) return;
+  const username = usernameInput?.value.trim();
+  if (!username || !passwordInput?.value || button.disabled) return;
   button.disabled = true;
-  button.textContent = 'Signing in…';
+  button.textContent = 'Masuk…';
   error.textContent = '';
   try {
     const response = await fetch('/api/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: _loginUsername, password: passwordInput.value })
+      body: JSON.stringify({ username, password: passwordInput.value })
     });
     let payload = {};
     try { payload = await response.json(); } catch { payload = {}; }
-    if (!response.ok) throw new Error(payload.error || 'Unable to sign in');
+    if (!response.ok) throw new Error(response.status === 401 ? 'Username atau password salah' : payload.error || 'Tidak bisa masuk');
     if (redirectAdmin(payload.user)) return;
     applyAuthenticatedUser(payload.user);
     document.getElementById('pin-lock-overlay')?.classList.remove('open');
@@ -106,14 +106,14 @@ export async function submitPassword() {
     await syncAdaptiveDashboard();
     renderFoodLog();
     renderDashboardOverview();
-    showToast(`Welcome back, ${payload.user.name}`, 'success');
+    showToast(`Halo, ${payload.user.name}`, 'success');
     openPendingMenu();
   } catch (loginError) {
     passwordInput.value = '';
-    error.textContent = loginError instanceof TypeError ? 'The server is not running' : loginError.message;
+    error.textContent = loginError instanceof TypeError ? 'Server tidak berjalan' : loginError.message;
   } finally {
     button.disabled = false;
-    button.textContent = 'Sign in';
+    button.textContent = 'Masuk';
   }
 }
 

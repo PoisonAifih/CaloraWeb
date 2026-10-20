@@ -43,7 +43,6 @@ export function _rawSwitchTab(name, replace = false) {
 
   const panel = document.getElementById(`tab-${name}`);
   if (panel) panel.classList.add('active');
-  document.body.classList.toggle('show-fab', name === 'dashboard' || name === 'nutrition' || name === 'catering');
 
   const path = TAB_PATHS[name] || '/';
   if (location.pathname !== path) {

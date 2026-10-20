@@ -6,8 +6,8 @@ import { state } from './state.js';
 import { switchTab, _rawSwitchTab } from './ui/router.js';
 import { initModalListeners, openModal, openFoodModal, closeFoodModal, openBodyStatsModal, closeBodyStatsModal, recalcAKGPreview } from './ui/modal.js';
 import { updateNavIndicator, updateNavUserDisplay } from './ui/nav.js';
-import { checkAuth, submitUsername, loginGoBack, submitPassword, lockApp, closeLoginOverlay, openLoginOverlay, openPendingMenu } from './features/auth.js';
-import { renderDashboardOverview, syncAdaptiveDashboard } from './features/dashboard.js';
+import { checkAuth, submitLogin, togglePasswordVisibility, loginComingSoon, lockApp, closeLoginOverlay, openLoginOverlay, openPendingMenu } from './features/auth.js';
+import { renderDashboardOverview, syncAdaptiveDashboard, showNotifications } from './features/dashboard.js';
 import { renderWorkouts, syncTimers, setWorkoutLogFilter, syncWebhookWorkouts } from './features/workout.js';
 import { renderFoodLog, syncRemoteFoodLogs } from './features/nutrition.js';
 import { updateTrendChart, updateWorkoutChart, changeChartTimeframe } from './features/analytics.js';
@@ -24,9 +24,9 @@ window.closeFoodModal       = closeFoodModal;
 window.openBodyStatsModal   = openBodyStatsModal;
 window.closeBodyStatsModal  = closeBodyStatsModal;
 window.recalcAKGPreview     = recalcAKGPreview;
-window.submitUsername       = submitUsername;
-window.loginGoBack          = loginGoBack;
-window.submitPassword       = submitPassword;
+window.submitLogin          = submitLogin;
+window.togglePasswordVisibility = togglePasswordVisibility;
+window.loginComingSoon      = loginComingSoon;
 window.lockApp              = lockApp;
 window.closeLoginOverlay    = closeLoginOverlay;
 window.openLoginOverlay     = openLoginOverlay;
@@ -34,6 +34,7 @@ window.setWorkoutLogFilter  = setWorkoutLogFilter;
 window.changeChartTimeframe = changeChartTimeframe;
 window.updateWorkoutChart   = updateWorkoutChart;
 window.saveWeightLog        = saveWeightLog;
+window.showNotifications    = showNotifications;
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 if (!window.__FITVAULT_BOOTSTRAPPED__) {

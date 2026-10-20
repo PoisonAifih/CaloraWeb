@@ -1,5 +1,7 @@
 // Catering
 
+import { requireAuth } from '../ui/guest.js';
+
 const KEY = 'calora-catering';
 
 const PACKAGES = [
@@ -35,6 +37,10 @@ function load() {
 
 function save(state) {
   localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+export function getTokenBalance() {
+  return load().balance;
 }
 
 function rupiah(value) {
@@ -228,6 +234,7 @@ export function renderCatering() {
     const close = event.target.closest('[data-close]');
     const sheetEl = event.target.closest('.catering-sheet');
     if (open) {
+      if (!requireAuth(event)) return;
       sheet = open.dataset.open;
     } else if (pack) {
       current.packageId = pack.dataset.pack;

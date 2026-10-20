@@ -58,13 +58,10 @@
   <nav class="bottom-nav" aria-label="Primary">
     <button class="nav-tab-btn" data-tab="dashboard" type="button" onclick="switchTab('dashboard')"><i class="ph ph-house" aria-hidden="true"></i><span>Home</span></button>
     <button class="nav-tab-btn" data-tab="catering" type="button" onclick="switchTab('catering')"><i class="ph ph-fork-knife" aria-hidden="true"></i><span>Catering</span></button>
-    <button class="nav-tab-btn" data-tab="nutrition" type="button" onclick="switchTab('nutrition')"><i class="ph ph-bowl-food" aria-hidden="true"></i><span>Food</span></button>
-    <button class="nav-tab-btn" data-tab="training" type="button" onclick="switchTab('training')"><i class="ph ph-barbell" aria-hidden="true"></i><span>Workout</span></button>
-    <button class="nav-tab-btn" data-tab="trends" type="button" onclick="switchTab('trends')"><i class="ph ph-chart-line" aria-hidden="true"></i><span>Trends</span></button>
-    <button class="nav-tab-btn" data-tab="profile" type="button" onclick="switchTab('profile')"><i class="ph ph-user" aria-hidden="true"></i><span>Profile</span></button>
+    <button class="bottom-nav-camera" type="button" aria-label="Foto makanan" onclick="openFoodModal()"><i class="ph ph-camera" aria-hidden="true"></i></button>
+    <button class="nav-tab-btn" data-tab="training" type="button" onclick="switchTab('training')"><i class="ph ph-target" aria-hidden="true"></i><span>Activity</span></button>
+    <button class="nav-tab-btn" data-tab="profile" type="button" onclick="switchTab('profile')"><i class="ph ph-dots-three" aria-hidden="true"></i><span>Other</span></button>
   </nav>
-
-  <button class="fab" type="button" aria-label="Log a meal" onclick="openFoodModal()">+</button>
 
   <div class="page">
 
@@ -132,68 +129,62 @@
       </section>
       <div data-authed-only>
 
-      <!-- MASTHEAD ROW -->
-      <div class="dash-masthead">
-        <div>
-          <p class="dash-eyebrow" id="dash-date-str"></p>
-          <h1 class="editorial dash-greeting-h1" id="dash-greeting">Calora user</h1>
-          <p class="text-sm text-ink-muted" id="dash-goal-label">Set a weight target</p>
-          <p class="text-xs text-ink-faint" id="dash-goal-target"></p>
+      <header class="home-head">
+        <span class="home-avatar editorial" id="home-avatar" aria-hidden="true">C</span>
+        <div class="home-hello">
+          <h1 class="home-greeting" id="dash-greeting">Halo 👋</h1>
+          <p>Semangat menjaga nutrisimu hari ini!</p>
         </div>
-        <div class="dash-actions">
-          <button class="btn btn-fill log-meal-header" type="button" onclick="openFoodModal()">Log a meal</button>
-        </div>
-      </div>
+        <button class="home-tokens" type="button" onclick="switchTab('catering')" aria-label="Token catering">
+          <span class="home-token-mark" aria-hidden="true">T</span><span id="home-token-balance">0</span>
+        </button>
+        <button class="home-bell" type="button" onclick="showNotifications()" aria-label="Notifikasi"><i class="ph ph-bell" aria-hidden="true"></i></button>
+      </header>
 
-      <section class="dash-catering" aria-labelledby="tomorrow-catering-title">
-        <div class="dash-catering-head">
-          <div>
-            <p class="dash-card-label">What to do next</p>
-            <h2 class="editorial" id="tomorrow-catering-title">Tomorrow's catering</h2>
+      <section class="home-card home-energy" aria-label="Kalori hari ini">
+        <div class="home-energy-top">
+          <div class="home-ring">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="home-ring-track" cx="60" cy="60" r="50"/>
+              <circle class="home-ring-fill" id="home-ring-fill" cx="60" cy="60" r="50" pathLength="100"/>
+            </svg>
+            <div class="home-ring-label">
+              <strong id="dash-kcal-consumed">0</strong>
+              <span id="dash-kcal-target">/ 2,000 kcal</span>
+            </div>
           </div>
-          <span class="rating-badge" id="catering-confidence">Low confidence</span>
+          <div class="home-remaining">
+            <p>Sisa kalori</p>
+            <strong id="dash-tile-remaining">0</strong>
+            <span class="home-remaining-pill" id="home-remaining-pill"><i class="ph ph-check" aria-hidden="true"></i>kcal tersisa</span>
+          </div>
         </div>
-        <div class="dash-catering-grid">
-          <div><span>Daily target</span><strong id="catering-daily-target">—</strong></div>
-          <div><span>Catering allocation</span><strong id="catering-allocation">—</strong></div>
-          <div><span>Tomorrow lunch</span><strong id="catering-lunch">—</strong><small id="catering-lunch-macros"></small></div>
-          <div><span>Tonight eat</span><strong id="catering-tonight">—</strong><small id="catering-tonight-macros"></small></div>
+        <div class="home-macros">
+          <div class="home-macro">
+            <div><span>Protein</span><span id="dash-p-val">0g</span></div>
+            <div class="home-macro-track"><div class="home-macro-fill is-p" id="dash-p-fill"></div></div>
+          </div>
+          <div class="home-macro">
+            <div><span>Karbohidrat</span><span id="dash-c-val">0g</span></div>
+            <div class="home-macro-track"><div class="home-macro-fill is-c" id="dash-c-fill"></div></div>
+          </div>
+          <div class="home-macro">
+            <div><span>Lemak</span><span id="dash-f-val">0g</span></div>
+            <div class="home-macro-track"><div class="home-macro-fill is-f" id="dash-f-fill"></div></div>
+          </div>
         </div>
-        <div class="dash-catering-adjustment" id="catering-adjustment">No adjustment yet.</div>
       </section>
 
-      <div class="today-strip">
-        <div class="dash-kcal-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <p class="dash-card-label" style="margin-bottom:0;">Energy Today</p>
-            <span id="dash-rating-badge" class="rating-badge rating-na">Grade N/A</span>
-          </div>
-          <div class="dash-kcal-numbers">
-            <span class="editorial dash-kcal-main" id="dash-kcal-consumed">0</span>
-            <span class="dash-kcal-unit">kcal</span>
-          </div>
-          <div class="dash-kcal-bar-wrap">
-            <div class="dash-kcal-bar-track">
-              <div class="dash-kcal-bar-fill" id="dash-kcal-fill"></div>
-            </div>
-            <span class="dash-kcal-pct" id="dash-kcal-pct">0%</span>
-          </div>
-          <p class="dash-kcal-target-label" id="dash-kcal-target">of 2,100 kcal target</p>
+      <h2 class="editorial home-section-title" id="tomorrow-catering-title">Status katering besok</h2>
+      <section class="home-card home-catering" aria-labelledby="tomorrow-catering-title">
+        <div class="home-catering-top">
+          <span class="home-badge editorial"><i class="ph ph-package" aria-hidden="true"></i>Menu besok</span>
+          <span class="home-catering-date" id="catering-date"></span>
         </div>
-      </div>
-
-      <div class="dash-wk-tiles today-strip">
-        <div class="dash-tile" onclick="switchTab('nutrition')">
-          <p class="dash-tile-label">Meals Today</p>
-          <p class="editorial dash-tile-val" id="dash-tile-meals">0</p>
-          <p class="dash-tile-sub" id="dash-tile-meals-sub">entries logged</p>
-        </div>
-        <div class="dash-tile">
-          <p class="dash-tile-label">Remaining</p>
-          <p class="editorial dash-tile-val" id="dash-tile-remaining">2,100</p>
-          <p class="dash-tile-sub">kcal left today</p>
-        </div>
-      </div>
+        <h3 class="home-catering-name" id="catering-lunch">Belum ada menu</h3>
+        <p class="home-catering-meta" id="catering-lunch-meta">Menu besok muncul setelah paket catering aktif.</p>
+        <div class="home-chips" id="catering-lunch-macros"></div>
+      </section>
 
       <div class="dash-bottom-row">
         <div class="dash-section">
@@ -245,46 +236,6 @@
         </div>
 
       <div class="dash-row-2">
-
-        <!-- MACRO BARS -->
-        <div class="dash-macro-col">
-          <div class="dash-macro-item">
-            <div class="dash-macro-top">
-              <span class="dash-macro-label">Protein</span>
-              <span class="dash-macro-val" id="dash-p-val">0g</span>
-            </div>
-            <div class="dash-macro-track">
-              <div class="dash-macro-fill dash-macro-fill--p" id="dash-p-fill"></div>
-            </div>
-          </div>
-          <div class="dash-macro-item">
-            <div class="dash-macro-top">
-              <span class="dash-macro-label">Carbs</span>
-              <span class="dash-macro-val" id="dash-c-val">0g</span>
-            </div>
-            <div class="dash-macro-track">
-              <div class="dash-macro-fill dash-macro-fill--c" id="dash-c-fill"></div>
-            </div>
-          </div>
-          <div class="dash-macro-item">
-            <div class="dash-macro-top">
-              <span class="dash-macro-label">Fat</span>
-              <span class="dash-macro-val" id="dash-f-val">0g</span>
-            </div>
-            <div class="dash-macro-track">
-              <div class="dash-macro-fill dash-macro-fill--f" id="dash-f-fill"></div>
-            </div>
-          </div>
-          <div class="dash-macro-item">
-            <div class="dash-macro-top">
-              <span class="dash-macro-label">Sugar</span>
-              <span class="dash-macro-val" id="dash-s-val">0g</span>
-            </div>
-            <div class="dash-macro-track">
-              <div class="dash-macro-fill dash-macro-fill--s" id="dash-s-fill"></div>
-            </div>
-          </div>
-        </div>
 
         <!-- WORKOUT TILES (4 micro-stats) -->
         <div class="dash-wk-tiles">
@@ -575,7 +526,25 @@
     </div><!-- /tab-nutrition -->
 
     <div class="tab-panel" id="tab-catering">
-      <div id="catering-root"></div>
+      <section data-guest-only>
+        <div class="guest-banner">
+          <p class="dash-card-label">Catering</p>
+          <h1 class="editorial">Catering pakai token</h1>
+          <p>Kamu butuh token untuk berlangganan catering. Token adalah saldo yang ditukar dengan paket menu 7 hari, diantar setiap hari sesuai target kalorimu.</p>
+        </div>
+        <div class="guest-sample">
+          <span class="sample-pill">Untuk apa token?</span>
+          <div class="guest-sample-grid">
+            <div><span>Package 1 · Healthy Weight Loss</span><strong>40 Token / 7 hari</strong></div>
+            <div><span>Package 2 · High Protein Muscle Building</span><strong>50 Token / 7 hari</strong></div>
+            <div><span>Harga token</span><strong>Mulai Rp 23.000</strong></div>
+            <div><span>Pembayaran</span><strong>QRIS</strong></div>
+          </div>
+          <p>Masuk untuk membeli token dan menukarkannya dengan paket.</p>
+          <button class="btn btn-fill" type="button" onclick="openLoginOverlay()">Masuk</button>
+        </div>
+      </section>
+      <div id="catering-root" data-authed-only></div>
     </div>
 
     <div class="tab-panel" id="tab-profile">
@@ -602,6 +571,10 @@
         </div>
       </div>
       <div class="profile-layout">
+        <nav class="other-links" aria-label="Lainnya">
+          <button type="button" onclick="switchTab('nutrition')"><i class="ph ph-bowl-food" aria-hidden="true"></i>Food log<i class="ph ph-caret-right" aria-hidden="true"></i></button>
+          <button type="button" onclick="switchTab('trends')"><i class="ph ph-chart-line" aria-hidden="true"></i>Trends<i class="ph ph-caret-right" aria-hidden="true"></i></button>
+        </nav>
         <form class="profile-card" onsubmit="handleBodyStatsSubmit(event)">
           <h2 class="editorial">Body and target</h2>
           <div class="field-row">
@@ -776,34 +749,39 @@
   </div>
 
   <!-- LOGIN OVERLAY -->
-  <div class="pin-overlay" id="pin-lock-overlay">
+  <div class="pin-overlay" id="pin-lock-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title">
     <div class="login-box" id="login-box">
+      <button class="login-close" type="button" onclick="closeLoginOverlay()" aria-label="Tutup"><i class="ph ph-x" aria-hidden="true"></i></button>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:48px;">
-        <p class="login-brand editorial" style="margin-bottom:0;">Calora AI</p>
-        <button class="btn btn-ghost btn-sm" onclick="closeLoginOverlay()" style="font-size:16px; padding:4px 10px;"
-          title="Close">✕</button>
-      </div>
+      <svg class="login-mark" viewBox="0 0 120 120" aria-hidden="true">
+        <path d="M78 22c-6 4-10 10-11 17M86 30c-7 1-13 5-17 11M70 16c-1 8 0 15 3 21" fill="none" stroke="#18542a" stroke-width="5" stroke-linecap="round"/>
+        <path d="M70 40c8 6 9 16 3 24L38 104c-4 5-12 3-12-4l6-44c2-10 12-20 24-21 5 0 10 2 14 5z" fill="#f96015" stroke="#1c1e1b" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M44 56l10 6M38 74l10 5M34 90l8 4" stroke="#1c1e1b" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <h1 class="editorial login-title" id="login-title">Eat smart,<br>live fresh</h1>
+      <div class="login-dashes" aria-hidden="true"><span></span><span></span><span></span></div>
 
-      <!-- STEP 1: USERNAME -->
-      <div class="login-step" id="login-step-1">
-        <label class="login-label" for="login-username">Username</label>
+      <form class="login-form" onsubmit="submitLogin(event)">
+        <label class="login-label" for="login-username">Email atau username</label>
         <input class="login-input" id="login-username" type="text" autocomplete="username" autocapitalize="none"
-          spellcheck="false" placeholder="" onkeydown="if(event.key==='Enter') submitUsername()">
-        <button class="login-btn" id="login-continue-btn" onclick="submitUsername()">Continue →</button>
-      </div>
+          spellcheck="false" required>
 
-      <!-- STEP 2: PASSWORD (revealed after username submitted) -->
-      <div class="login-step login-step--hidden" id="login-step-2">
-        <button class="login-back" onclick="loginGoBack()">← Back</button>
         <label class="login-label" for="login-password">Password</label>
-        <input class="login-input" id="login-password" type="password" autocomplete="current-password" placeholder=""
-          onkeydown="if(event.key==='Enter') submitPassword()">
-        <button class="login-btn" id="login-unlock-btn" onclick="submitPassword()">Sign in</button>
-      </div>
+        <div class="login-password">
+          <input class="login-input" id="login-password" type="password" autocomplete="current-password" required>
+          <button class="login-eye" type="button" onclick="togglePasswordVisibility()" aria-label="Tampilkan password" aria-pressed="false"><i class="ph ph-eye" aria-hidden="true"></i></button>
+        </div>
 
-      <p class="login-error" id="login-error-msg"></p>
-      <p class="login-lockout" id="login-lockout-msg"></p>
+        <button class="login-forgot" type="button" onclick="loginComingSoon('Reset password')">Lupa Password?</button>
+        <p class="login-error" id="login-error-msg" role="alert"></p>
+        <button class="login-btn" id="login-unlock-btn" type="submit">Masuk</button>
+      </form>
+
+      <div class="login-divider"><span>atau masuk dengan</span></div>
+      <div class="login-social">
+        <button type="button" onclick="loginComingSoon('Masuk dengan Google')"><span>G</span>Google</button>
+        <button type="button" onclick="loginComingSoon('Masuk dengan Apple ID')"><span>A</span>Apple ID</button>
+      </div>
     </div>
   </div>
 

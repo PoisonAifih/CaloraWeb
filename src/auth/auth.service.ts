@@ -28,7 +28,12 @@ export class AuthService {
 
   async login(username: string, password: string, res: Response) {
     const user = await this.prisma.user.findFirst({
-      where: { name: { equals: username, mode: 'insensitive' } },
+      where: {
+        OR: [
+          { name: { equals: username, mode: 'insensitive' } },
+          { email: { equals: username, mode: 'insensitive' } }
+        ]
+      },
       include: { profile: true }
     });
     if (!user || !verifyPassword(password || '', user.passwordHash)) {
