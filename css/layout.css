@@ -539,7 +539,32 @@ body:not(.is-authed) [data-authed-only] { display: none !important; }
 .guest-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
+}
+
+/* The QR keeps a white tile in dark mode so phones can still scan it. */
+.app-qr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 220px;
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.app-qr img {
+  flex: none;
+  padding: 4px;
+  border: 1px solid var(--sand);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Nobody can scan the screen they are holding. */
+@media (max-width: 600px) {
+  .app-qr { display: none; }
 }
 
 .android-download-note {
