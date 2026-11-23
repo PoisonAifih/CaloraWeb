@@ -84,7 +84,7 @@ export class AnalyzeService {
           { role: 'user', content: inputContent }
         ]
       }),
-      signal: AbortSignal.timeout(75_000)
+      signal: AbortSignal.timeout(Number(process.env.VISION_TIMEOUT_MS) || 75_000)
     });
     const data = parseCompletionBody(await response.text());
     if (!response.ok) throw new Error(data.error?.message || `Vision API HTTP ${response.status}`);
