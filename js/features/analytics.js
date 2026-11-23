@@ -33,7 +33,7 @@ export function updateTrendChart(period = '7D') {
   if (!ctx) return;
 
   const daysCount = period === '1D' ? 1 : period === '30D' ? 30 : period === '1Y' ? 365 : 7;
-  const labels = [], pData = [], cData = [], fData = [], sData = [];
+  const labels = [], pData = [], cData = [], fData = [], sData = [], naData = [];
 
   for (let i = daysCount - 1; i >= 0; i--) {
     const d = new Date();
@@ -46,6 +46,7 @@ export function updateTrendChart(period = '7D') {
     cData.push(dayEntries.reduce((a, f) => a + (Number(f.carbs)   || 0), 0));
     fData.push(dayEntries.reduce((a, f) => a + (Number(f.fat)     || 0), 0));
     sData.push(dayEntries.reduce((a, f) => a + (Number(f.sugar)   || 0), 0));
+    naData.push(dayEntries.reduce((a, f) => a + (Number(f.sodium)  || 0), 0));
   }
 
   if (trendChartInstance) { trendChartInstance.destroy(); trendChartInstance = null; }
@@ -57,15 +58,18 @@ export function updateTrendChart(period = '7D') {
         { label: t('Protein (g)'), data: pData, borderColor: '#9abc05', backgroundColor: '#9abc0522', tension: 0.3, fill: true },
         { label: t('Carbs (g)'), data: cData, borderColor: '#ffc926', backgroundColor: '#ffc92622', tension: 0.3, fill: true },
         { label: t('Fat (g)'), data: fData, borderColor: '#f96015', backgroundColor: '#f9601522', tension: 0.3, fill: true },
-        { label: t('Sugar (g)'), data: sData, borderColor: themeColor('--heading'), backgroundColor: `${themeColor('--heading')}22`, tension: 0.3, fill: true }
+        { label: t('Sugar (g)'), data: sData, borderColor: themeColor('--heading'), backgroundColor: `${themeColor('--heading')}22`, tension: 0.3, fill: true },
+        // Milligrams would flatten the gram lines, so sodium gets its own axis on the right.
+        { label: t('Sodium (mg)'), data: naData, yAxisID: 'mg', borderColor: '#d52518', borderDash: [6, 4], tension: 0.3, fill: false }
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false, locale: locale(),
       plugins: { legend: { labels: { color: themeColor('--ink-muted'), font: { family: 'Inter' } } } },
       scales: {
         x: { ticks: { color: themeColor('--ink-muted') }, grid: { color: themeColor('--line') } },
-        y: { ticks: { color: themeColor('--ink-muted') }, grid: { color: themeColor('--line') } }
+        y: { ticks: { color: themeColor('--ink-muted') }, grid: { color: themeColor('--line') }, title: { display: true, text: 'g', color: themeColor('--ink-muted') } },
+        mg: { position: 'right', beginAtZero: true, ticks: { color: themeColor('--ink-muted') }, grid: { drawOnChartArea: false }, title: { display: true, text: 'mg', color: themeColor('--ink-muted') } }
       }
     }
   });
@@ -109,7 +113,7 @@ export function updateWorkoutChart(period = '7D') {
       datasets: [{ label: t('Sets Logged'), data: setsData, backgroundColor: '#f96015', borderRadius: 4 }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false, locale: locale(),
       plugins: { legend: { labels: { color: themeColor('--ink-muted'), font: { family: 'Inter' } } } },
       scales: {
         x: { ticks: { color: themeColor('--ink-muted') }, grid: { color: themeColor('--line') } },

@@ -34,6 +34,7 @@ class StateStore {
   deleteWorkout(id) { this.workouts = this.workouts.filter(item => item.id !== id); this.notify('workouts_changed', this.workouts); }
   setWorkouts(list) { this.workouts = Array.isArray(list) ? list : []; this.notify('workouts_changed', this.workouts); }
   addFoodLog(entry) { this.foodLog.push(entry); this.dashboard = null; this.notify('food_changed', this.foodLog); }
+  updateFoodLog(entry) { this.foodLog = this.foodLog.map(item => item.id === entry.id ? entry : item); this.dashboard = null; this.notify('food_changed', this.foodLog); }
   deleteFoodLog(id) { this.foodLog = this.foodLog.filter(item => item.id !== id); this.dashboard = null; this.notify('food_changed', this.foodLog); }
   setFoodLog(list) { this.foodLog = Array.isArray(list) ? list : []; this.notify('food_changed', this.foodLog); }
   setBodyStats(stats) { this.bodyStats = { ...this.bodyStats, ...stats }; this.dashboard = null; this.notify('bodystats_changed', this.bodyStats); }

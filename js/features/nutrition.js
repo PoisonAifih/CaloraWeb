@@ -73,14 +73,38 @@ export function renderFoodLog() {
         <div class="food-log-macros">
           <span>${esc(entry.category || 'meal')}</span>
           <span>P ${entry.protein || 0}g</span><span>C ${entry.carbs || 0}g</span><span>F ${entry.fat || 0}g</span>
+          <span>Sugar ${entry.sugar || 0}g</span><span>Na ${entry.sodium || 0}mg</span>
         </div>
         ${['AI_ESTIMATE', 'PHOTO_ESTIMATE', 'TEXT_ESTIMATE', 'ai-photo'].includes(String(entry.source || '').toUpperCase().replace('-', '_')) || String(entry.source || '').toLowerCase() === 'ai-photo' ? `<small class="estimate-note">AI estimate${entry.confidence != null ? ` · ${Math.round(entry.confidence * 100)}% confidence` : ''}; reviewed before saving.</small>` : ''}
       </div>
       <div class="food-log-actions">
         <strong>${entry.kcal} kcal</strong>
+        <button class="btn btn-ghost btn-sm" onclick="editFoodLogEntry('${esc(entry.id)}')">Edit</button>
         <button class="btn btn-ghost btn-sm btn-danger" onclick="deleteFoodLogEntry('${esc(entry.id)}')">Delete</button>
       </div>
     </article>`).join('');
+}
+
+// Opens the log form filled with an existing entry; saving updates it in place.
+export function editFoodLogEntry(id) {
+  const entry = state.foodLog.find(item => item.id === id);
+  if (!entry) return;
+  const set = (field, value) => { document.getElementById(field).value = value ?? ''; };
+  set('food-name-input', entry.meal || entry.mealName);
+  set('food-category-input', entry.category || 'snack');
+  set('food-kcal-input', entry.kcal);
+  set('food-p-input', entry.protein);
+  set('food-c-input', entry.carbs);
+  set('food-f-input', entry.fat);
+  set('food-sugar-input', entry.sugar);
+  set('food-sodium-input', entry.sodium);
+  set('food-source-input', entry.source || 'MANUAL');
+  const editId = document.getElementById('food-edit-id');
+  editId.value = entry.id;
+  editId.dataset.createdAt = entry.createdAt || '';
+  editId.dataset.confidence = entry.confidence ?? '';
+  document.getElementById('food-modal-title').textContent = 'Edit meal';
+  openFoodModal();
 }
 
 export function deleteFoodLogEntry(id) {
@@ -119,23 +143,31 @@ export async function saveManualFoodLog(event) {
     source: document.getElementById('food-source-input')?.value || 'MANUAL',
     createdAt: new Date().toISOString()
   };
+  // Editing keeps the meal's original time and AI confidence; the server would otherwise reset them.
+  const editId = document.getElementById('food-edit-id');
+  const editing = editId?.value || '';
+  if (editing && editId.dataset.createdAt) entry.createdAt = editId.dataset.createdAt;
+  if (editing && editId.dataset.confidence) entry.confidence = Number(editId.dataset.confidence);
   if (!entry.meal || !Number.isFinite(entry.kcal) || entry.kcal <= 0 || [entry.protein, entry.carbs, entry.fat, entry.sugar, entry.sodium].some(value => value < 0)) {
     return showToast('Enter a meal name and valid non-negative nutrition values', 'danger');
   }
   button.disabled = true;
   button.textContent = 'Saving…';
   try {
-    const response = await fetch('api/food', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
+    const response = await fetch(editing ? `api/food/${encodeURIComponent(editing)}` : 'api/food', {
+      method: editing ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry)
+    });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || 'Food entry could not be saved');
-    state.addFoodLog(payload);
+    if (editing) state.updateFoodLog(payload);
+    else state.addFoodLog(payload);
     event.target.reset();
     document.getElementById('food-source-input').value = 'MANUAL';
     closeFoodModal();
     renderFoodLog();
     updateTrendChart();
     renderDashboardOverview();
-    showToast('Food entry logged', 'success');
+    showToast(editing ? 'Food entry updated' : 'Food entry logged', 'success');
   } catch (error) { showToast(error.message, 'danger'); }
   finally {
     button.disabled = false;
@@ -227,6 +259,7 @@ export async function analyzeFoodPhoto(event) {
   }
 }
 
+window.editFoodLogEntry = editFoodLogEntry;
 window.deleteFoodLogEntry = deleteFoodLogEntry;
 window.saveManualFoodLog = saveManualFoodLog;
 window.handleFoodDateChange = handleFoodDateChange;

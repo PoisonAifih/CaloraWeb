@@ -28,6 +28,16 @@ export function openFoodModal() {
 
 export function closeFoodModal() {
   document.getElementById('food-overlay')?.classList.remove('open');
+  // Leaving an edit clears the form so the next "Log a meal" starts empty.
+  const editId = document.getElementById('food-edit-id');
+  if (editId?.value) {
+    editId.closest('form')?.reset();
+    editId.value = '';
+    delete editId.dataset.createdAt;
+    delete editId.dataset.confidence;
+    document.getElementById('food-source-input').value = 'MANUAL';
+    document.getElementById('food-modal-title').textContent = 'Log a meal';
+  }
 }
 
 export function recalcAKGPreview() {

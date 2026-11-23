@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#fafaf5">
+  <meta name="theme-color" content="#f3e8cc">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Calora AI — Adaptive Nutrition</title>
+  <title>Calora AI</title>
   <link rel="icon" type="image/png" href="assets/calora_logo.png">
   <meta name="description" content="Personal workout and nutrition tracker.">
 
@@ -59,7 +59,7 @@
       </div>
       <div class="nav-right">
         <button class="theme-toggle lang-toggle" type="button" data-lang-toggle translate="no">ID</button>
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Mode gelap"><i class="ph ph-moon" aria-hidden="true"></i></button>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Mode gelap"><i class="ph ph-sun" aria-hidden="true"></i></button>
         <button class="btn btn-fill nav-signin" id="nav-signin" type="button" onclick="openLoginOverlay()">Sign in</button>
         <div class="nav-user-badge">
           <span class="user-name" id="nav-user-name">Guest</span>
@@ -727,6 +727,7 @@
           <input id="food-photo-input" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onchange="analyzeFoodPhoto(event)">
           <button type="button" class="btn btn-ghost btn-sm" id="food-analyze-btn" onclick="document.getElementById('food-photo-input').click()">Analyze photo</button>
           <input type="hidden" id="food-source-input" value="MANUAL">
+          <input type="hidden" id="food-edit-id" value="">
         </div>
         <div class="field-row">
           <div class="field field-grow-2">

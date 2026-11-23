@@ -23,9 +23,10 @@ function apply() {
   if (pref === 'system') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.dataset.theme = pref;
   const dark = isDarkTheme();
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#121511' : '#fafaf5');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#121511' : '#f3e8cc');
   document.querySelectorAll('[data-theme-toggle] i').forEach(icon => {
-    icon.className = `ph ${dark ? 'ph-sun' : 'ph-moon'}`;
+    // Shows the current mode, like the language button; clicking switches.
+    icon.className = `ph ${dark ? 'ph-moon' : 'ph-sun'}`;
   });
   document.querySelectorAll('[data-theme-toggle]').forEach(button => {
     button.setAttribute('aria-label', dark ? 'Mode terang' : 'Mode gelap');

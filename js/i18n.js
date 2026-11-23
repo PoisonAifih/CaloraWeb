@@ -59,7 +59,6 @@ const PAIRS = [
   ['Light theme', 'Terang'],
   ['Dark', 'Gelap'],
   ['Language', 'Bahasa'],
-  ['Calora AI — Adaptive Nutrition', 'Calora AI — Nutrisi Adaptif'],
   ['Drag to rotate 360°', 'Geser untuk memutar 360°'],
 
   // Landing and guest home
@@ -259,6 +258,10 @@ const PAIRS = [
   ['Enter a meal name and valid non-negative nutrition values', 'Isi nama makanan dan nilai nutrisi yang valid (tidak negatif)'],
   ['Food entry could not be saved', 'Catatan makanan gagal disimpan'],
   ['Food entry logged', 'Makanan dicatat'],
+  ['Food entry updated', 'Catatan makanan diperbarui'],
+  ['Edit', 'Ubah'],
+  ['Edit meal', 'Ubah makanan'],
+  ['Sugar {n}g', 'Gula {n}g'],
   ['Menu not found', 'Menu tidak ditemukan'],
   ['Menu loaded. Check it and tap Save', 'Menu dimuat. Periksa lalu tekan Simpan'],
   ['Photo could not be analyzed', 'Foto gagal dianalisis'],
