@@ -33,13 +33,17 @@ async function loadDashboard() {
   content.hidden = false;
   await loadMenus();
   const menuNames = new Map(menus.map(menu => [menu.id, menu.name]));
-  const labels = { tomorrowOrders:'Tomorrow orders', confirmedPlans:'Confirmed', awaitingReview:'Awaiting review', lunchPortions:'Lunch portions' };
+  const labels = { tomorrowOrders:'Tomorrow orders', confirmedPlans:'Confirmed', awaitingReview:'Awaiting review', lunchPortions:'Lunch portions', dinnerPortions:'Dinner portions' };
   document.getElementById('admin-metrics').innerHTML = Object.entries(data.metrics).map(([key,value]) => `<div><span>${escapeHtml(labels[key] || key)}</span><strong>${value}</strong></div>`).join('');
   document.getElementById('admin-plan-rows').innerHTML = data.plans.map(plan => {
-    const lunch = plan.meals.find(meal => meal.mealType === 'LUNCH');
-    const lunchName = lunch?.menuId ? menuNames.get(lunch.menuId) || lunch.menuId : '—';
-    return `<tr><td>${escapeHtml(plan.userName)}<small>${escapeHtml(plan.dietaryPreference)}${plan.allergies ? ` · Allergy: ${escapeHtml(plan.allergies)}` : ''}</small></td><td>${plan.effectiveDailyTarget} kcal</td><td>${plan.cateringAllocation} kcal</td><td>${escapeHtml(lunchName)}</td><td>${escapeHtml((plan.explanationCodes || []).join(', '))}</td><td><select data-plan-id="${escapeHtml(plan.id)}"><option>${escapeHtml(plan.status)}</option>${['DRAFT','CONFIRMED','LOCKED','FULFILLED','CANCELLED'].filter(value => value !== plan.status).map(value => `<option>${value}</option>`).join('')}</select></td></tr>`;
-  }).join('') || '<tr><td colspan="6">No lunch plans for tomorrow.</td></tr>';
+    // "Chicken Katsu · L" for each catering meal, so the kitchen knows the portion to cook.
+    const mealLabel = mealType => {
+      const meal = plan.meals.find(item => item.mealType === mealType);
+      if (!meal?.menuId) return '—';
+      return `${menuNames.get(meal.menuId) || meal.menuId}${meal.size ? ` · ${meal.size}` : ''}`;
+    };
+    return `<tr><td>${escapeHtml(plan.userName)}<small>${escapeHtml(plan.dietaryPreference)}${plan.allergies ? ` · Allergy: ${escapeHtml(plan.allergies)}` : ''}</small></td><td>${plan.effectiveDailyTarget} kcal</td><td>${plan.cateringAllocation} kcal</td><td>${escapeHtml(mealLabel('LUNCH'))}</td><td>${escapeHtml(mealLabel('DINNER'))}</td><td>${escapeHtml((plan.explanationCodes || []).join(', '))}</td><td><select data-plan-id="${escapeHtml(plan.id)}"><option>${escapeHtml(plan.status)}</option>${['DRAFT','CONFIRMED','LOCKED','FULFILLED','CANCELLED'].filter(value => value !== plan.status).map(value => `<option>${value}</option>`).join('')}</select></td></tr>`;
+  }).join('') || '<tr><td colspan="7">No catering plans for tomorrow.</td></tr>';
   document.querySelectorAll('[data-plan-id]').forEach(select => select.addEventListener('change', async () => {
     try {
       await api(`api/admin/plans/${encodeURIComponent(select.dataset.planId)}/status`, { method:'PUT', body:JSON.stringify({ status:select.value }) });

@@ -39,6 +39,7 @@ test('API validates nutrition data and isolates each user', async (t) => {
   const baseUrl = `http://127.0.0.1:${app.getHttpServer().address().port}`;
   await prisma.foodLog.deleteMany({});
   await prisma.session.deleteMany({});
+  await prisma.adaptivePlan.deleteMany({ where: { userId: 'dave' } });
   await prisma.activityLog.deleteMany({ where: { id: { in: ['activity-1', 'activity-1-dup'] } } });
   const daveCookie = await login(baseUrl, 'Dave', 'dave-pass');
   const refreshed = await fetch(`${baseUrl}/api/session`, { headers: { Cookie: daveCookie } });
@@ -124,7 +125,8 @@ test('API validates nutrition data and isolates each user', async (t) => {
   const unchangedPlan = await plans.ensurePlan('dave', lockedAt);
   assert.equal(lockedPlan.status, 'LOCKED');
   assert.equal(unchangedPlan.generatedAt, lockedPlan.generatedAt);
-  assert.equal(lockedPlan.dinner, null);
+  assert.ok(lockedPlan.lunch?.size && lockedPlan.dinner?.size);
+  assert.equal(lockedPlan.tokens, lockedPlan.lunch.tokens + lockedPlan.dinner.tokens);
 
   assert.equal((await fetch(`${baseUrl}/api/food`)).status, 401);
   assert.equal((await fetch(`${baseUrl}/api/food`, { headers: { Authorization: 'Bearer test-webhook-secret', 'X-Calora-User': 'dave' } })).status, 401);

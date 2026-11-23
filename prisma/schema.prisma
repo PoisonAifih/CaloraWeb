@@ -161,6 +161,8 @@ model CateringMeal {
   proteinG       Float        @map("protein_g")
   carbsG         Float        @map("carbs_g")
   fatG           Float        @map("fat_g")
+  size           String?
+  tokens         Int?
   status         String
   plan           AdaptivePlan @relation(fields: [adaptivePlanId], references: [id], onDelete: Cascade)
   menu           Menu?        @relation(fields: [menuId], references: [id])

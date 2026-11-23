@@ -455,3 +455,219 @@
 .catering-menus-empty {
   color: var(--ink-muted);
 }
+
+/* "Why tokens?" explainer, shared by the guest and member catering views. */
+.token-explainer {
+  margin: 16px 0;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.token-explainer-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.token-explainer-head > div { flex: 1; }
+
+/* The round "i" on the balance card that opens the explainer sheet. */
+.token-info-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 6px;
+  vertical-align: middle;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.token-info-btn:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* Sheet version of the explainer. */
+.token-sheet .token-explainer-head { margin-bottom: 4px; }
+.token-sheet .catering-actions { margin-top: 20px; }
+
+.token-explainer-head h2 {
+  font-size: 26px;
+  color: var(--heading);
+  line-height: 1.1;
+}
+
+.token-explainer-head p {
+  margin-top: 6px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+.token-coin {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sunshine);
+  color: #1c1e1b;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15), 0 0 0 4px var(--cream);
+}
+
+.token-sizes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.token-size {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 132px;
+  padding: 14px 8px;
+  border-radius: var(--r-md);
+  background: var(--cream);
+  text-align: center;
+}
+
+.token-size strong {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--heading);
+}
+
+.token-size span:last-child {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+/* A bowl that grows with the portion: rim plus filling. */
+.token-bowl {
+  --bowl: 36px;
+  width: var(--bowl);
+  height: calc(var(--bowl) / 2);
+  margin-bottom: 6px;
+  border-radius: 0 0 999px 999px;
+  border-top: 5px solid var(--bowl-fill);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.token-size.is-s .token-bowl { --bowl: 34px; --bowl-fill: var(--kiwi); }
+.token-size.is-m .token-bowl { --bowl: 46px; --bowl-fill: var(--sunshine); }
+.token-size.is-l .token-bowl { --bowl: 58px; --bowl-fill: var(--carrot); }
+
+.token-caption {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.token-example {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--sand);
+}
+
+.token-example-title {
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.token-day {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+}
+
+.token-day + .token-day { margin-top: 6px; }
+.token-day.is-saving { background: var(--ok-soft); }
+.token-day strong { min-width: 72px; text-align: right; color: var(--heading); }
+
+.token-meals b {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--carrot);
+  color: #fff;
+  font-size: 13px;
+}
+
+.token-meals b.is-small { background: var(--kiwi); color: #1c1e1b; }
+
+.token-saved {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.token-saved i { font-size: 20px; }
+
+.token-facts {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.token-facts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+}
+
+.token-facts i {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--heading);
+  font-size: 18px;
+}
+
+@media (max-width: 420px) {
+  .token-explainer { padding: 18px; }
+  .token-explainer-head h2 { font-size: 22px; }
+  .token-coin { width: 38px; height: 38px; font-size: 19px; }
+  .token-example { padding: 12px; }
+  .token-day { gap: 8px; padding: 10px; }
+  .token-day strong { min-width: 0; }
+  .token-meals b { width: 24px; height: 24px; font-size: 12px; }
+}

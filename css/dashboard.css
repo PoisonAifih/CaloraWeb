@@ -759,6 +759,45 @@
 
 .home-chips:empty { display: none; }
 
+.home-catering-meal + .home-catering-meal {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.home-catering-meal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.home-catering-meal-type {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.home-size {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--forest);
+  color: var(--on-forest);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.home-catering-total {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-weight: 700;
+  color: var(--heading);
+}
+
 .home-chip {
   padding: 6px 12px;
   border-radius: 8px;

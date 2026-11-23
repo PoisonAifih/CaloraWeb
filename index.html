@@ -197,9 +197,11 @@
           <span class="home-badge editorial"><i class="ph ph-package" aria-hidden="true"></i>Menu besok</span>
           <span class="home-catering-date" id="catering-date"></span>
         </div>
-        <h3 class="home-catering-name" id="catering-lunch">Belum ada menu</h3>
-        <p class="home-catering-meta" id="catering-lunch-meta">Menu besok muncul setelah paket catering aktif.</p>
-        <div class="home-chips" id="catering-lunch-macros"></div>
+        <div id="catering-meals">
+          <h3 class="home-catering-name">No menu yet</h3>
+          <p class="home-catering-meta">Tomorrow's menu appears once a catering package is active.</p>
+        </div>
+        <p class="home-catering-total" id="catering-tokens" hidden></p>
       </section>
 
       <div class="dash-bottom-row">
@@ -559,6 +561,7 @@
           <p>Masuk untuk membeli token dan menukarkannya dengan paket.</p>
           <button class="btn btn-fill" type="button" onclick="openLoginOverlay()">Masuk</button>
         </div>
+        <div data-token-explainer></div>
       </section>
       <div id="catering-root" data-authed-only></div>
     </div>

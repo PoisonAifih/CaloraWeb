@@ -292,6 +292,19 @@ const PAIRS = [
   ['Swap tokens for weekly menu packages', 'Tukar token dengan paket menu mingguan'],
   ['You need tokens to subscribe to catering. Tokens are a balance you exchange for a 7-day menu package, delivered every day to match your calorie target.', 'Kamu butuh token untuk berlangganan catering. Token adalah saldo yang ditukar dengan paket menu 7 hari, diantar setiap hari sesuai target kalorimu.'],
   ['What are tokens for?', 'Untuk apa token?'],
+  ['Why tokens?', 'Kenapa pakai token?'],
+  ["You don't pick a portion size. Calora picks S, M or L for each meal, every day, based on what you need.", 'Kamu tidak memilih ukuran porsi. Setiap hari Calora memilih S, M, atau L untuk tiap makan sesuai kebutuhanmu.'],
+  ['Per meal. Every day is lunch + dinner.', 'Per porsi. Setiap hari ada makan siang + makan malam.'],
+  ['Example: bulking', 'Contoh: bulking'],
+  ['Normal day', 'Hari biasa'],
+  ['Already ate out', 'Sudah jajan di luar'],
+  ['2 tokens stay in your balance for another day', '2 token tetap tersimpan untuk hari lain'],
+  ['Tokens only pay for what is delivered, so a smaller portion never costs you anything.', 'Token hanya terpakai sesuai porsi yang dikirim, jadi porsi lebih kecil tidak membuatmu rugi.'],
+  ['Deposit up front, for example 40 tokens a week. Leftovers (say 10 tokens) roll over to the next week.', 'Deposit di awal, misalnya 40 token per minggu. Sisanya (misal 10 token) dipakai lagi minggu berikutnya.'],
+  ['Lunch & dinner', 'Makan siang & malam'],
+  ['{size} · {n} tokens', '{size} · {n} token'],
+  ['Tomorrow: {n} tokens', 'Total besok: {n} token'],
+  ['Tokens are valid for one year.', 'Token berlaku selama 1 tahun.'],
   ['Package {n} · Healthy Weight Loss', 'Paket {n} · Turun Berat Badan Sehat'],
   ['Package {n} · High Protein Muscle Building', 'Paket {n} · Tinggi Protein Bentuk Otot'],
   ['Package {n}', 'Paket {n}'],
@@ -412,7 +425,8 @@ const PAIRS = [
   ['Calories (kcal)', 'Kalori (kcal)'],
 
   // Catch-all token amounts go last so the specific token sentences above match first.
-  ['{n} Tokens', '{n} Token']
+  ['{n} Tokens', '{n} Token'],
+  ['{n} tokens', '{n} token']
 ];
 
 const from = lang === 'id' ? 0 : 1;

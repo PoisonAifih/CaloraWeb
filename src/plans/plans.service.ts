@@ -61,7 +61,23 @@ export class PlansService {
       include: { meals: { include: { menu: true } } }
     });
     if (!row) return null;
-    const lunch = row.meals.find(meal => meal.mealType === 'LUNCH');
+    const meal = (mealType: string) => {
+      const item = row.meals.find(entry => entry.mealType === mealType);
+      return item ? {
+        id: item.menuId,
+        name: item.menu?.name || 'Unassigned',
+        mealType: item.mealType,
+        size: item.size,
+        tokens: item.tokens,
+        calories: item.calories,
+        proteinG: item.proteinG,
+        carbsG: item.carbsG,
+        fatG: item.fatG,
+        status: item.status
+      } : null;
+    };
+    const lunch = meal('LUNCH');
+    const dinner = meal('DINNER');
     return {
       id: row.id,
       planDate: row.planDate,
@@ -78,17 +94,9 @@ export class PlansService {
       explanationCodes: row.explanationCodes,
       status: row.status,
       rollingState: row.inputSnapshot,
-      lunch: lunch && {
-        id: lunch.menuId,
-        name: lunch.menu?.name || 'Unassigned',
-        mealType: lunch.mealType,
-        calories: lunch.calories,
-        proteinG: lunch.proteinG,
-        carbsG: lunch.carbsG,
-        fatG: lunch.fatG,
-        status: lunch.status
-      },
-      dinner: null
+      lunch,
+      dinner,
+      tokens: (lunch?.tokens || 0) + (dinner?.tokens || 0)
     };
   }
 
@@ -134,17 +142,19 @@ export class PlansService {
         }
       });
       await tx.cateringMeal.deleteMany({ where: { adaptivePlanId: id } });
-      if (plan.lunch) {
+      for (const meal of [plan.lunch, plan.dinner].filter(Boolean)) {
         await tx.cateringMeal.create({
           data: {
             id: `meal_${randomUUID()}`,
             adaptivePlanId: id,
-            mealType: 'LUNCH',
-            menuId: plan.lunch.id,
-            calories: plan.lunch.calories,
-            proteinG: plan.lunch.proteinG,
-            carbsG: plan.lunch.carbsG,
-            fatG: plan.lunch.fatG,
+            mealType: meal.mealType,
+            menuId: meal.id,
+            size: meal.size ?? null,
+            tokens: meal.tokens ?? null,
+            calories: meal.calories,
+            proteinG: meal.proteinG,
+            carbsG: meal.carbsG,
+            fatG: meal.fatG,
             status: plan.status
           }
         });
@@ -252,6 +262,8 @@ export class PlansService {
       meals: row.meals.map(meal => ({
         mealType: meal.mealType,
         menuId: meal.menuId,
+        size: meal.size,
+        tokens: meal.tokens,
         calories: meal.calories,
         proteinG: meal.proteinG
       }))
@@ -262,7 +274,8 @@ export class PlansService {
         tomorrowOrders: mapped.length,
         confirmedPlans: mapped.filter(p => p.status === 'CONFIRMED').length,
         awaitingReview: mapped.filter(p => p.status === 'DRAFT').length,
-        lunchPortions: mapped.filter(p => p.meals.some(m => m.mealType === 'LUNCH')).length
+        lunchPortions: mapped.filter(p => p.meals.some(m => m.mealType === 'LUNCH')).length,
+        dinnerPortions: mapped.filter(p => p.meals.some(m => m.mealType === 'DINNER')).length
       },
       plans: mapped
     };

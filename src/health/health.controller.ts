@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class HealthController {
   @Get()
   health() {
-    return { ok: true, database: 'postgres', engine: 'adaptive-v2' };
+    return { ok: true, database: 'postgres', engine: 'adaptive-v3' };
   }
 }

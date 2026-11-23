@@ -167,21 +167,27 @@ export function renderDashboardOverview() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   setText('catering-date', tomorrow.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'short' }));
-  const lunch = plan?.lunch;
-  const chipsEl = document.getElementById('catering-lunch-macros');
-  if (lunch) {
-    setText('catering-lunch', lunch.name || 'Menu belum tersedia');
-    const metaEl = document.getElementById('catering-lunch-meta');
-    if (metaEl) metaEl.innerHTML = `Makan siang · <strong>${Number(lunch.calories).toLocaleString(locale())} kcal</strong>`;
-    if (chipsEl) chipsEl.innerHTML = [
-      ['Protein', lunch.proteinG], ['Karbo', lunch.carbsG], ['Lemak', lunch.fatG]
-    ].filter(([, grams]) => grams != null).map(([label, grams]) =>
-      `<span class="home-chip">${label} ${Math.round(grams)}g</span>`
-    ).join('');
-  } else {
-    setText('catering-lunch', 'Belum ada menu');
-    setText('catering-lunch-meta', 'Menu besok muncul setelah paket catering aktif.');
-    if (chipsEl) chipsEl.innerHTML = '';
+  // Tomorrow's lunch and dinner, each with the portion size Calora picked and its token cost.
+  const meals = [plan?.lunch, plan?.dinner].filter(Boolean);
+  const cateringEl = document.getElementById('catering-meals');
+  if (cateringEl) cateringEl.innerHTML = meals.length ? meals.map(meal => `
+    <div class="home-catering-meal">
+      <div class="home-catering-meal-head">
+        <span class="home-catering-meal-type">${meal.mealType === 'DINNER' ? 'Dinner' : 'Lunch'}</span>
+        ${meal.size ? `<span class="home-size">${esc(meal.size)} · ${meal.tokens} tokens</span>` : ''}
+      </div>
+      <h3 class="home-catering-name">${esc(meal.name || 'Menu not available yet')}</h3>
+      <p class="home-catering-meta"><strong>${Number(meal.calories).toLocaleString(locale())} kcal</strong></p>
+      <div class="home-chips">${[['Protein', meal.proteinG], ['Carbs', meal.carbsG], ['Fat', meal.fatG]]
+        .filter(([, grams]) => grams != null)
+        .map(([label, grams]) => `<span class="home-chip">${label} ${Math.round(grams)}g</span>`).join('')}</div>
+    </div>`).join('') : `
+    <h3 class="home-catering-name">No menu yet</h3>
+    <p class="home-catering-meta">Tomorrow's menu appears once a catering package is active.</p>`;
+  const tokensEl = document.getElementById('catering-tokens');
+  if (tokensEl) {
+    tokensEl.hidden = !plan?.tokens;
+    tokensEl.textContent = plan?.tokens ? `Tomorrow: ${plan.tokens} tokens` : '';
   }
   if (plan) {
     const explanations = document.getElementById('catering-explanations');

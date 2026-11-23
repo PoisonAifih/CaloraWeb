@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ACTIVITY_PROVIDER_POLICY, calculateRollingNutritionState, generateTomorrowCateringPlan } from '../js/domain/catering.mjs';
+import { ACTIVITY_PROVIDER_POLICY, PORTION_SIZES, calculateRollingNutritionState, generateTomorrowCateringPlan } from '../js/domain/catering.mjs';
 
 const profile = { bb: 70, tb: 175, age: 30, sex: 'male', activity: 'moderate', goal: 'maintain' };
 const menus = [
@@ -14,8 +14,8 @@ test('one high day has low confidence and cannot create calorie debt', () => {
   const plan = generateTomorrowCateringPlan({ profile, rollingState: state, menus, now: new Date('2026-09-22T10:00:00Z') });
   assert.equal(state.confidence, 'LOW');
   assert.equal(plan.effectiveDailyTarget, plan.baseDailyTarget);
-  assert.equal(plan.dinner, null);
   assert.ok(plan.lunch);
+  assert.ok(plan.dinner);
   assert.ok(plan.explanationCodes.includes('INSUFFICIENT_LOGGING'));
 });
 
@@ -71,4 +71,34 @@ test('cutoff locks tomorrow plan', () => {
   const state = calculateRollingNutritionState({ profile, now: new Date('2026-09-22T21:00:00') });
   const plan = generateTomorrowCateringPlan({ profile, rollingState: state, menus, now: new Date('2026-09-22T21:00:00'), cutoffHour: 20 });
   assert.equal(plan.status, 'LOCKED');
+});
+
+test('plans a lunch and a different dinner, each sized S, M or L with its token cost', () => {
+  const state = calculateRollingNutritionState({ profile, now: new Date('2026-09-22T10:00:00Z') });
+  const plan = generateTomorrowCateringPlan({ profile, rollingState: state, menus, now: new Date('2026-09-22T10:00:00Z') });
+  assert.equal(plan.lunch.mealType, 'LUNCH');
+  assert.equal(plan.dinner.mealType, 'DINNER');
+  assert.notEqual(plan.lunch.id, plan.dinner.id);
+  for (const meal of [plan.lunch, plan.dinner]) {
+    assert.ok(['S', 'M', 'L'].includes(meal.size));
+    assert.equal(meal.tokens, PORTION_SIZES[meal.size].tokens);
+  }
+  assert.equal(plan.tokens, plan.lunch.tokens + plan.dinner.tokens);
+  assert.equal(plan.cateringAllocation, plan.lunch.calories + plan.dinner.calories);
+});
+
+test('a smaller calorie target gets smaller portions and costs fewer tokens', () => {
+  const small = { bb: 50, tb: 155, age: 30, sex: 'female', activity: 'sedentary', goal: 'lose' };
+  const big = { bb: 95, tb: 190, age: 25, sex: 'male', activity: 'active', goal: 'gain' };
+  const planFor = person => generateTomorrowCateringPlan({
+    profile: person,
+    rollingState: calculateRollingNutritionState({ profile: person, now: new Date('2026-09-22T10:00:00Z') }),
+    menus,
+    now: new Date('2026-09-22T10:00:00Z')
+  });
+  const lean = planFor(small);
+  const bulk = planFor(big);
+  assert.equal(lean.lunch.size, 'S');
+  assert.equal(bulk.lunch.size, 'L');
+  assert.ok(lean.tokens < bulk.tokens);
 });

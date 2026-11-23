@@ -1,6 +1,6 @@
 import { calculateDailyNutritionState, calculateNutritionTargets } from './nutrition';
 
-export const ADAPTIVE_ENGINE_VERSION = 'adaptive-v2';
+export const ADAPTIVE_ENGINE_VERSION = 'adaptive-v3';
 export const ACTIVITY_PROVIDER_POLICY = Object.freeze({
   MANUAL: { canInfluenceAdaptivePlan: true },
   HEALTH_CONNECT: { canInfluenceAdaptivePlan: true },
@@ -81,15 +81,45 @@ function allowedMenus(menus: any[], profile: any) {
   });
 }
 
-function selectLunch(menus: any[], allocation: number, proteinUp: boolean) {
+// Portion sizes the kitchen cooks. Calora picks one per meal and charges its tokens,
+// so a smaller portion on a day the customer needs less leaves tokens for another day.
+export const PORTION_SIZES = Object.freeze({
+  S: { factor: 0.75, tokens: 2 },
+  M: { factor: 1, tokens: 3 },
+  L: { factor: 1.25, tokens: 4 }
+});
+
+// Share of the day's calories each catering meal should cover.
+const MEAL_SHARES = { LUNCH: 0.35, DINNER: 0.3 };
+
+// Kitchen mains (LUNCH or DINNER menus) can be served at either meal.
+const isMain = (menu: any) => menu.mealType === 'LUNCH' || menu.mealType === 'DINNER';
+
+function portion(menu: any, size: string, mealType: string) {
+  const { factor, tokens } = PORTION_SIZES[size as keyof typeof PORTION_SIZES];
+  return {
+    ...menu,
+    mealType,
+    size,
+    tokens,
+    calories: round(menu.calories * factor),
+    proteinG: round(menu.proteinG * factor),
+    carbsG: round(menu.carbsG * factor),
+    fatG: round(menu.fatG * factor)
+  };
+}
+
+/** Picks the dish and portion size whose calories come closest to the meal's share of the day. */
+function selectMeal(menus: any[], mealType: string, allocation: number, proteinUp: boolean) {
   let best: any = null;
-  for (const lunch of menus.filter(item => item.mealType === 'LUNCH')) {
-    const kcal = Number(lunch.calories);
-    const protein = Number(lunch.proteinG);
-    const score = Math.abs(kcal - allocation) + (proteinUp ? Math.max(0, 48 - protein) * 8 : 0);
-    if (!best || score < best.score) best = { lunch, score };
+  for (const menu of menus) {
+    for (const size of Object.keys(PORTION_SIZES)) {
+      const meal = portion(menu, size, mealType);
+      const score = Math.abs(meal.calories - allocation) + (proteinUp ? Math.max(0, 48 - meal.proteinG) * 8 : 0);
+      if (!best || score < best.score) best = { meal, score };
+    }
   }
-  return best || { lunch: null };
+  return best ? best.meal : null;
 }
 
 export function generateTomorrowCateringPlan({ profile = {}, rollingState, menus = [], recentMenuIds = [], now = new Date(), cutoffHour = 20 }: any) {
@@ -108,11 +138,16 @@ export function generateTomorrowCateringPlan({ profile = {}, rollingState, menus
   const proteinUp = rollingState.confidence !== 'LOW' && rollingState.proteinDeviation <= -Math.max(15, rollingState.proteinTarget * 0.1);
   if (proteinUp) explanationCodes.push('PROTEIN_BELOW_TARGET');
   const effectiveDailyTarget = Math.max(1200, baseDailyTarget + adjustment);
-  const desiredAllocation = Math.round(effectiveDailyTarget * 0.35);
-  const candidates = allowedMenus(menus, profile).filter(item => !recentMenuIds.slice(-2).includes(item.id));
-  const lunches = allowedMenus(menus, profile).filter(item => item.mealType === 'LUNCH');
-  const selected = selectLunch(candidates.filter((item: any) => item.mealType === 'LUNCH').length ? candidates : lunches, desiredAllocation, proteinUp);
-  const cateringAllocation = selected.lunch ? Number(selected.lunch.calories) : desiredAllocation;
+  const lunchTarget = Math.round(effectiveDailyTarget * MEAL_SHARES.LUNCH);
+  const dinnerTarget = Math.round(effectiveDailyTarget * MEAL_SHARES.DINNER);
+  // Skip dishes from the last couple of days when there is anything else to serve.
+  const allowed = allowedMenus(menus, profile).filter(isMain);
+  const fresh = allowed.filter(item => !recentMenuIds.includes(item.id));
+  const pool = fresh.length ? fresh : allowed;
+  const lunch = selectMeal(pool, 'LUNCH', lunchTarget, proteinUp);
+  const dinnerPool = pool.filter(item => item.id !== lunch?.id);
+  const dinner = selectMeal(dinnerPool.length ? dinnerPool : pool, 'DINNER', dinnerTarget, proteinUp);
+  const cateringAllocation = (lunch ? lunch.calories : lunchTarget) + (dinner ? dinner.calories : dinnerTarget);
   const planDate = dateKey(new Date(new Date(now).getTime() + DAY_MS));
   const afterCutoff = new Date(now).getHours() >= Number(cutoffHour);
   return {
@@ -125,8 +160,9 @@ export function generateTomorrowCateringPlan({ profile = {}, rollingState, menus
     proteinTargetG: rollingState.proteinTarget,
     carbsTargetG: rollingState.carbsTarget,
     fatTargetG: rollingState.fatTarget,
-    lunch: selected.lunch,
-    dinner: null,
+    lunch,
+    dinner,
+    tokens: (lunch ? lunch.tokens : 0) + (dinner ? dinner.tokens : 0),
     adaptations: proteinUp ? ['PROTEIN_UP'] : adjustment ? [`ENERGY_${adjustment > 0 ? 'UP' : 'DOWN'}_100`] : [],
     confidence: rollingState.confidence,
     explanationCodes: [...new Set(explanationCodes)],
