@@ -60,6 +60,8 @@ export function activityFor(row: ActivityLog) {
     distance: row.distanceMeters == null ? null : Number((row.distanceMeters / 1000).toFixed(2)),
     estimatedEnergyKcal: row.estimatedEnergyKcal,
     calories: row.estimatedEnergyKcal,
+    weightKg: row.weightKg,
+    reps: row.reps,
     energySource: row.energySource,
     dataQuality: row.dataQuality,
     source: row.provider,

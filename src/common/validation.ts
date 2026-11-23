@@ -74,6 +74,8 @@ export function validateActivity(input: Record<string, unknown> = {}) {
     durationSeconds: input.durationSeconds == null ? null : numeric(input.durationSeconds, 'durationSeconds', 0, 604800),
     distanceMeters: input.distanceMeters == null ? null : numeric(input.distanceMeters, 'distanceMeters', 0, 1000000),
     estimatedEnergyKcal: input.estimatedEnergyKcal == null ? null : numeric(input.estimatedEnergyKcal, 'estimatedEnergyKcal', 0, 10000),
+    weightKg: input.weightKg == null ? null : numeric(input.weightKg, 'weightKg', 0, 2000),
+    reps: input.reps == null ? null : Math.round(numeric(input.reps, 'reps', 0, 10000)),
     energySource: String(input.energySource || 'USER_ESTIMATE').slice(0, 40),
     dataQuality: String(input.dataQuality || 'ESTIMATED').slice(0, 30),
     rawProviderReference: input.rawProviderReference == null ? null : String(input.rawProviderReference)

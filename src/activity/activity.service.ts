@@ -33,6 +33,8 @@ export class ActivityService {
           durationSeconds: entry.durationSeconds,
           distanceMeters: entry.distanceMeters,
           estimatedEnergyKcal: entry.estimatedEnergyKcal,
+          weightKg: entry.weightKg,
+          reps: entry.reps,
           energySource: entry.energySource,
           dataQuality: entry.dataQuality,
           rawProviderReference: entry.rawProviderReference

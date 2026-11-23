@@ -97,6 +97,8 @@ model ActivityLog {
   durationSeconds       Int?     @map("duration_seconds")
   distanceMeters        Float?   @map("distance_meters")
   estimatedEnergyKcal   Float?   @map("estimated_energy_kcal")
+  weightKg              Float?   @map("weight_kg")
+  reps                  Int?
   energySource          String?  @map("energy_source")
   dataQuality           String   @map("data_quality")
   rawProviderReference  String?  @map("raw_provider_reference")

@@ -172,10 +172,21 @@ test('guest login creates an isolated throwaway account', async (t) => {
   assert.deepEqual(menus.map(menu => menu.id).sort(), ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11']);
   assert.ok(menus.some(menu => menu.name === "Mac 'n Cheese Cordon Bleu"));
 
+  // Guests showcase every feature, meal analysis included (no vision provider is set up here).
   const analyze = await fetch(`${baseUrl}/api/analyze`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: first.cookie }, body: JSON.stringify({ text: 'nasi goreng' })
   });
-  assert.equal(analyze.status, 403);
+  assert.notEqual(analyze.status, 403);
+  assert.notEqual(analyze.status, 401);
+
+  const set = await fetch(`${baseUrl}/api/activity`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: first.cookie },
+    body: JSON.stringify({ activityType: 'STRENGTH', name: 'Barbel · 6kg × 200', weightKg: 6, reps: 200 })
+  });
+  assert.equal(set.status, 201);
+  const [strength] = await (await fetch(`${baseUrl}/api/activity`, { headers: { Cookie: first.cookie } })).json();
+  assert.equal(strength.weightKg, 6);
+  assert.equal(strength.reps, 200);
 
   const passwordLogin = await fetch(`${baseUrl}/api/session`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: first.user.id.replace('guest_', 'Guest CAI '), password: '!' })
