@@ -1,4 +1,5 @@
 import { state } from '../state.js';
+import { locale } from '../i18n.js';
 import { esc, calcNutriGrade } from '../utils.js';
 import { calculateDailyNutritionState, calculateNutritionTargets } from '../domain/nutrition.mjs';
 import { showToast } from '../ui/toast.js';
@@ -15,8 +16,8 @@ function setText(id, value) {
 }
 
 function updateSummary(targets, daily) {
-  setText('total-kcal-display', Math.round(daily.consumed.kcal).toLocaleString('id-ID'));
-  setText('target-akg-kcal', targets.kcal.toLocaleString('id-ID'));
+  setText('total-kcal-display', Math.round(daily.consumed.kcal).toLocaleString(locale()));
+  setText('target-akg-kcal', targets.kcal.toLocaleString(locale()));
   setText('total-protein', Math.round(daily.consumed.protein));
   setText('total-carbs', Math.round(daily.consumed.carbs));
   setText('total-fat', Math.round(daily.consumed.fat));
@@ -27,8 +28,8 @@ function updateSummary(targets, daily) {
   setText('target-akg-f', targets.fat);
   setText('sidebar-bb', targets.inputs.weightKg);
   setText('sidebar-tb', targets.inputs.heightCm);
-  setText('sidebar-bmr', targets.bmr.toLocaleString('id-ID'));
-  setText('sidebar-tdee', targets.kcal.toLocaleString('id-ID'));
+  setText('sidebar-bmr', targets.bmr.toLocaleString(locale()));
+  setText('sidebar-tdee', targets.kcal.toLocaleString(locale()));
 
   const grade = calcNutriGrade(daily.consumed.kcal, targets.kcal, daily.consumed.protein, targets.protein);
   const badge = document.getElementById('sidebar-rating-badge');
@@ -113,10 +114,12 @@ export async function saveManualFoodLog(event) {
     protein: Number(document.getElementById('food-p-input')?.value || 0),
     carbs: Number(document.getElementById('food-c-input')?.value || 0),
     fat: Number(document.getElementById('food-f-input')?.value || 0),
+    sugar: Number(document.getElementById('food-sugar-input')?.value || 0),
+    sodium: Number(document.getElementById('food-sodium-input')?.value || 0),
     source: document.getElementById('food-source-input')?.value || 'MANUAL',
     createdAt: new Date().toISOString()
   };
-  if (!entry.meal || !Number.isFinite(entry.kcal) || entry.kcal <= 0 || [entry.protein, entry.carbs, entry.fat].some(value => value < 0)) {
+  if (!entry.meal || !Number.isFinite(entry.kcal) || entry.kcal <= 0 || [entry.protein, entry.carbs, entry.fat, entry.sugar, entry.sodium].some(value => value < 0)) {
     return showToast('Enter a meal name and valid non-negative nutrition values', 'danger');
   }
   button.disabled = true;
@@ -152,6 +155,9 @@ export async function openScannedMenu(menuId) {
     document.getElementById('food-p-input').value = menu.proteinG;
     document.getElementById('food-c-input').value = menu.carbsG;
     document.getElementById('food-f-input').value = menu.fatG;
+    // Menus do not list sugar or sodium.
+    document.getElementById('food-sugar-input').value = '';
+    document.getElementById('food-sodium-input').value = '';
     document.getElementById('food-source-input').value = 'MENU_QR';
     openFoodModal();
     showToast('Menu loaded. Check it and tap Save', 'info');
@@ -206,6 +212,8 @@ export async function analyzeFoodPhoto(event) {
     document.getElementById('food-p-input').value = payload.protein || '';
     document.getElementById('food-c-input').value = payload.carbs || '';
     document.getElementById('food-f-input').value = payload.fat || '';
+    document.getElementById('food-sugar-input').value = payload.sugar || '';
+    document.getElementById('food-sodium-input').value = payload.sodium || '';
     document.getElementById('food-source-input').value = payload.source || 'PHOTO_ESTIMATE';
     showToast('Review the estimate before saving', 'info');
   } catch (error) {

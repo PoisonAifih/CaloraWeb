@@ -21,6 +21,7 @@
 // ==========================================================================
 
 import { state } from '../state.js';
+import { locale, shortDate } from '../i18n.js';
 import { esc, getWorkoutTimestamp } from '../utils.js';
 import { calculateDailyNutritionState, calculateNutritionTargets } from '../domain/nutrition.mjs';
 import { getTokenBalance } from './catering.js';
@@ -80,8 +81,8 @@ export function renderDashboardOverview() {
   const ringEl = document.getElementById('home-ring-fill');
   const tgtEl  = document.getElementById('dash-kcal-target');
   const pillEl = document.getElementById('home-remaining-pill');
-  if (kcalEl) kcalEl.textContent = food.kcal.toLocaleString('en-US');
-  if (tgtEl)  tgtEl.textContent  = `/ ${targets.kcal.toLocaleString('en-US')} kcal`;
+  if (kcalEl) kcalEl.textContent = food.kcal.toLocaleString(locale());
+  if (tgtEl)  tgtEl.textContent  = `/ ${targets.kcal.toLocaleString(locale())} kcal`;
   if (ringEl) {
     ringEl.classList.toggle('is-over', over);
     // Set after a tick so the CSS transition runs
@@ -134,7 +135,7 @@ export function renderDashboardOverview() {
   if (lastLabelEl) {
     if (weekWorkouts.length > 0) {
       const last = weekWorkouts[weekWorkouts.length - 1];
-      lastLabelEl.textContent = `Last: ${last.name || 'Session'} · ${last.date || ''}`;
+      lastLabelEl.textContent = `Last: ${last.name || 'Session'} · ${last.timestamp ? shortDate(last.timestamp) : (last.date || '')}`;
     } else {
       lastLabelEl.textContent = 'No sessions this week';
     }
@@ -146,7 +147,7 @@ export function renderDashboardOverview() {
   if (state.workouts && state.workouts.length > 0) {
     const last = state.workouts[state.workouts.length - 1];
     if (lastSessionEl)  lastSessionEl.textContent  = last.name || '—';
-    if (lastSessionSub) lastSessionSub.textContent = last.date || 'Recent';
+    if (lastSessionSub) lastSessionSub.textContent = last.timestamp ? shortDate(last.timestamp) : (last.date || 'Recent');
   }
 
   const setsEl = document.getElementById('dash-tile-sets');
@@ -158,20 +159,20 @@ export function renderDashboardOverview() {
   if (mealsSub) mealsSub.textContent = todayFood.length === 1 ? 'entry logged' : 'entries logged';
 
   const remainEl = document.getElementById('dash-tile-remaining');
-  if (remainEl) remainEl.textContent = Math.abs(targets.kcal - food.kcal).toLocaleString('en-US');
+  if (remainEl) remainEl.textContent = Math.abs(targets.kcal - food.kcal).toLocaleString(locale());
 
   // ── TOMORROW'S CATERING (server-owned rolling 7-day decision) ─────────────
   const plan = state.dashboard?.tomorrow;
   const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  setText('catering-date', tomorrow.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' }));
+  setText('catering-date', tomorrow.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'short' }));
   const lunch = plan?.lunch;
   const chipsEl = document.getElementById('catering-lunch-macros');
   if (lunch) {
     setText('catering-lunch', lunch.name || 'Menu belum tersedia');
     const metaEl = document.getElementById('catering-lunch-meta');
-    if (metaEl) metaEl.innerHTML = `Makan siang · <strong>${Number(lunch.calories).toLocaleString('en-US')} kcal</strong>`;
+    if (metaEl) metaEl.innerHTML = `Makan siang · <strong>${Number(lunch.calories).toLocaleString(locale())} kcal</strong>`;
     if (chipsEl) chipsEl.innerHTML = [
       ['Protein', lunch.proteinG], ['Karbo', lunch.carbsG], ['Lemak', lunch.fatG]
     ].filter(([, grams]) => grams != null).map(([label, grams]) =>
@@ -221,7 +222,7 @@ export function renderDashboardOverview() {
         <div class="dash-workout-row">
           <div>
             <p class="dash-workout-name">${esc(w.name || 'Exercise')}</p>
-            <p class="dash-workout-meta">${esc(w.date || '')}${w.weight ? ` · ${w.weight}kg` : ''}</p>
+            <p class="dash-workout-meta">${esc(w.timestamp ? shortDate(w.timestamp) : (w.date || ''))}${w.weight ? ` · ${w.weight}kg` : ''}</p>
           </div>
           <span class="dash-workout-sets">${w.sets ? w.sets.length + ' sets' : (w.reps ? w.reps + ' reps' : '—')}</span>
         </div>

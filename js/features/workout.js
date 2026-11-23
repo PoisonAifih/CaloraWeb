@@ -3,6 +3,7 @@
 // ==========================================================================
 
 import { state } from '../state.js';
+import { locale, shortDate } from '../i18n.js';
 import { formatTime, esc, getWorkoutTimestamp } from '../utils.js';
 import { showToast } from '../ui/toast.js';
 import { showConfirmModal, closeModal, closeBodyStatsModal } from '../ui/modal.js';
@@ -155,7 +156,7 @@ export function renderWorkouts() {
   const totalVolume    = filtered.reduce((a, w) => {
     if (w.sets && w.sets.length > 0)
       return a + w.sets.reduce((sa, s) => sa + (Number(s.weight) || 0) * (Number(s.reps) || 0), 0);
-    return a + (Number(w.weight) || 0) * (Number(w.reps) || 0);
+    return a + (Number(w.weightKg ?? w.weight) || 0) * (Number(w.reps) || 0);
   }, 0);
 
   const sumEx  = document.getElementById('sum-exercises');
@@ -163,7 +164,7 @@ export function renderWorkouts() {
   const sumVol = document.getElementById('sum-volume');
   if (sumEx)  sumEx.textContent  = totalExercises;
   if (sumSet) sumSet.textContent = totalSets;
-  if (sumVol) sumVol.textContent = `${totalVolume.toLocaleString('id-ID')} kg`;
+  if (sumVol) sumVol.textContent = `${totalVolume.toLocaleString(locale())} kg`;
 
   if (filtered.length === 0) {
     container.innerHTML = `
@@ -178,7 +179,7 @@ export function renderWorkouts() {
       <div class="exercise-header">
         <div>
           <h3 class="exercise-title">${esc(w.name)}</h3>
-          <span style="font-size:12px;color:var(--ink-muted);">${esc(w.date || 'Today')}</span>
+          <span style="font-size:12px;color:var(--ink-muted);">${esc(w.timestamp ? shortDate(w.timestamp) : (w.date || 'Today'))}</span>
         </div>
         <button class="btn btn-ghost btn-sm btn-danger" onclick="deleteExerciseEntry('${w.id}')">Delete</button>
       </div>
@@ -195,7 +196,8 @@ export function renderWorkouts() {
           const wt = typeof w.weight === 'number' ? w.weight : (Array.isArray(w.weight) && w.weight[0] ? (w.weight[0].kilograms || w.weight[0].weight) : (typeof w.weight === 'object' && w.weight !== null ? (w.weight.kilograms || w.weight.weight) : w.weight));
           const parts = [];
           if (wt) parts.push(`${wt} kg`);
-          if (w.reps) parts.push(`${w.reps} reps`);
+          // Strength sets already show "kg × reps" in their name.
+          if (w.reps && w.weightKg == null) parts.push(`${w.reps} reps`);
           if (w.duration) parts.push(`${w.duration} mins`);
           if (w.calories) parts.push(`${w.calories} kcal`);
           if (w.heartRate) parts.push(`HR: ${w.heartRate} bpm`);
@@ -243,7 +245,7 @@ export async function handleLogSubmit(e) {
   if (!name) return;
 
   const now = new Date();
-  const response = await fetch('api/activity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ activityType:'STRENGTH', name:`${name} · ${weight}kg × ${reps}`, startedAt:now.toISOString(), dataQuality:'USER_REPORTED' }) });
+  const response = await fetch('api/activity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ activityType:'STRENGTH', name:`${name} · ${weight}kg × ${reps}`, weightKg:weight, reps, startedAt:now.toISOString(), dataQuality:'USER_REPORTED' }) });
   if (!response.ok) return showToast('Exercise entry could not be saved', 'danger');
 
   if (nameInput)   nameInput.value   = '';

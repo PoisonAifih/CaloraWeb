@@ -1,4 +1,5 @@
 import { state } from '../state.js';
+import { locale } from '../i18n.js';
 import { showToast } from '../ui/toast.js';
 import { syncAdaptiveDashboard } from './dashboard.js';
 import { requireAuth } from '../ui/guest.js';
@@ -8,7 +9,7 @@ const setText = (id, value) => { const element = document.getElementById(id); if
 export function renderTrends() {
   const rolling = state.dashboard?.tomorrow?.rollingState;
   if (!rolling) return;
-  setText('trend-calories', `${rolling.averageCalories.toLocaleString('id-ID')} kcal/day`);
+  setText('trend-calories', `${rolling.averageCalories.toLocaleString(locale())} kcal/day`);
   setText('trend-protein', `${rolling.averageProtein} g/day`);
   setText('trend-completeness', `${Math.round(rolling.loggingCompleteness * 100)}% · ${rolling.daysLogged}/${rolling.windowDays} days`);
   setText('trend-activity', `~${rolling.activityEnergyAverage} kcal/day`);

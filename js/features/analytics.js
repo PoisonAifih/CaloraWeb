@@ -3,6 +3,7 @@
 // ==========================================================================
 
 import { state } from '../state.js';
+import { locale, t } from '../i18n.js';
 import { getWorkoutTimestamp } from '../utils.js';   // shared util — no circular dep
 import { themeColor } from '../ui/theme.js';
 
@@ -38,7 +39,7 @@ export function updateTrendChart(period = '7D') {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dateStr = d.toDateString();
-    labels.push(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+    labels.push(d.toLocaleDateString(locale(), { day: 'numeric', month: 'short' }));
 
     const dayEntries = state.foodLog.filter(f => f.createdAt && new Date(f.createdAt).toDateString() === dateStr);
     pData.push(dayEntries.reduce((a, f) => a + (Number(f.protein) || 0), 0));
@@ -53,10 +54,10 @@ export function updateTrendChart(period = '7D') {
     data: {
       labels,
       datasets: [
-        { label: 'Protein (g)', data: pData, borderColor: '#9abc05', backgroundColor: '#9abc0522', tension: 0.3, fill: true },
-        { label: 'Carbs (g)',   data: cData, borderColor: '#ffc926', backgroundColor: '#ffc92622', tension: 0.3, fill: true },
-        { label: 'Fat (g)',     data: fData, borderColor: '#f96015', backgroundColor: '#f9601522', tension: 0.3, fill: true },
-        { label: 'Sugar (g)',   data: sData, borderColor: themeColor('--heading'), backgroundColor: `${themeColor('--heading')}22`, tension: 0.3, fill: true }
+        { label: t('Protein (g)'), data: pData, borderColor: '#9abc05', backgroundColor: '#9abc0522', tension: 0.3, fill: true },
+        { label: t('Carbs (g)'), data: cData, borderColor: '#ffc926', backgroundColor: '#ffc92622', tension: 0.3, fill: true },
+        { label: t('Fat (g)'), data: fData, borderColor: '#f96015', backgroundColor: '#f9601522', tension: 0.3, fill: true },
+        { label: t('Sugar (g)'), data: sData, borderColor: themeColor('--heading'), backgroundColor: `${themeColor('--heading')}22`, tension: 0.3, fill: true }
       ]
     },
     options: {
@@ -94,7 +95,7 @@ export function updateWorkoutChart(period = '7D') {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dateStr = d.toDateString();
-    labels.push(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+    labels.push(d.toLocaleDateString(locale(), { day: 'numeric', month: 'short' }));
 
     const dayWorkouts = state.workouts.filter(w => new Date(getWorkoutTimestamp(w)).toDateString() === dateStr);
     setsData.push(dayWorkouts.reduce((a, w) => a + (w.sets ? w.sets.length : 1), 0));
@@ -105,7 +106,7 @@ export function updateWorkoutChart(period = '7D') {
     type: 'bar',
     data: {
       labels,
-      datasets: [{ label: 'Sets Logged', data: setsData, backgroundColor: '#f96015', borderRadius: 4 }]
+      datasets: [{ label: t('Sets Logged'), data: setsData, backgroundColor: '#f96015', borderRadius: 4 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,

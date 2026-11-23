@@ -1,6 +1,7 @@
 // Catering
 
 import { requireAuth } from '../ui/guest.js';
+import { locale } from '../i18n.js';
 import { state as appState } from '../state.js';
 
 const KEY = 'calora-catering';
@@ -82,7 +83,7 @@ function rupiah(value) {
 }
 
 function longDate(iso) {
-  return new Date(`${iso}T12:00:00`).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  return new Date(`${iso}T12:00:00`).toLocaleDateString(locale(), { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function daysLeft(iso) {

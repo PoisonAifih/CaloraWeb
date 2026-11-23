@@ -594,6 +594,15 @@ body:not(.is-authed) [data-authed-only] { display: none !important; }
 
 .theme-toggle:hover { background: var(--cream); }
 
+.lang-toggle {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.i18n-pending body { visibility: hidden; }
+
 .nav-right { display: flex; align-items: center; gap: 10px; }
 
 .theme-choice {

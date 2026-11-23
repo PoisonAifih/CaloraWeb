@@ -25,6 +25,9 @@
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="css/app.css?v=2.5.0">
   <script>
+    // js/i18n.js removes this once the page is in the chosen language; the timeout is a safety net.
+    document.documentElement.classList.add('i18n-pending');
+    setTimeout(function () { document.documentElement.classList.remove('i18n-pending'); }, 2000);
     try {
       var theme = localStorage.getItem('calora-theme');
       if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
@@ -55,6 +58,7 @@
         </div>
       </div>
       <div class="nav-right">
+        <button class="theme-toggle lang-toggle" type="button" data-lang-toggle translate="no">ID</button>
         <button class="theme-toggle" type="button" data-theme-toggle aria-label="Mode gelap"><i class="ph ph-moon" aria-hidden="true"></i></button>
         <button class="btn btn-fill nav-signin" id="nav-signin" type="button" onclick="openLoginOverlay()">Sign in</button>
         <div class="nav-user-badge">
@@ -661,6 +665,11 @@
             <button type="button" data-theme-choice="light" aria-pressed="false">Terang</button>
             <button type="button" data-theme-choice="dark" aria-pressed="false">Gelap</button>
           </div>
+          <div class="theme-choice" role="group" aria-label="Bahasa">
+            <span>Bahasa</span>
+            <button type="button" data-lang-choice="id" aria-pressed="true" translate="no">Indonesia</button>
+            <button type="button" data-lang-choice="en" aria-pressed="false" translate="no">English</button>
+          </div>
           <div class="form-actions">
             <a class="btn btn-ghost android-download" href="https://github.com/PoisonAifih/CaloraApp-releases/releases/latest/download/app-release.apk"><i class="ph ph-android-logo" aria-hidden="true"></i>Android app</a>
             <button class="btn btn-ghost" id="profile-session-button" type="button" onclick="lockApp()">Sign out</button>
@@ -743,6 +752,10 @@
           <div class="field"><label for="food-c-input">Carbs (g)</label><input id="food-c-input" type="number" min="0" max="1000" step="0.1" placeholder="45"></div>
           <div class="field"><label for="food-f-input">Fat (g)</label><input id="food-f-input" type="number" min="0" max="1000" step="0.1" placeholder="12"></div>
         </div>
+        <div class="field-row">
+          <div class="field"><label for="food-sugar-input">Sugar (g)</label><input id="food-sugar-input" type="number" min="0" max="1000" step="0.1" placeholder="8"></div>
+          <div class="field"><label for="food-sodium-input">Sodium (mg)</label><input id="food-sodium-input" type="number" min="0" max="20000" step="1" inputmode="numeric" placeholder="600"></div>
+        </div>
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" onclick="closeFoodModal()">Cancel</button>
           <button type="submit" class="btn btn-fill" id="food-save-btn">Save</button>
@@ -772,7 +785,7 @@
       <button class="login-close" type="button" onclick="closeLoginOverlay()" aria-label="Tutup"><i class="ph ph-x" aria-hidden="true"></i></button>
 
       <img class="login-mark" src="assets/calora_logo.png" alt="Calora">
-      <h1 class="editorial login-title" id="login-title">Eat smart,<br>live fresh</h1>
+      <h1 class="editorial login-title" id="login-title" translate="no">Eat smart,<br>live fresh</h1>
       <div class="login-dashes" aria-hidden="true"><span></span><span></span><span></span></div>
 
       <form class="login-form" onsubmit="submitLogin(event)">

@@ -2,6 +2,8 @@
 // FITVAULT — Application Entry Point & Bootstrap Coordinator
 // ==========================================================================
 
+// First, so the page is translated before anything else renders.
+import './i18n.js';
 import { state } from './state.js';
 import { switchTab, _rawSwitchTab } from './ui/router.js';
 import { initModalListeners, openModal, openFoodModal, closeFoodModal, openBodyStatsModal, closeBodyStatsModal, recalcAKGPreview } from './ui/modal.js';
