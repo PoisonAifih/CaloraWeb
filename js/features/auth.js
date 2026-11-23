@@ -78,6 +78,39 @@ export function loginComingSoon(feature) {
   showToast(`${feature} belum tersedia`, 'info');
 }
 
+async function finishLogin(user) {
+  if (redirectAdmin(user)) return;
+  applyAuthenticatedUser(user);
+  document.getElementById('pin-lock-overlay')?.classList.remove('open');
+  _rawSwitchTab(state.pendingTab || 'dashboard');
+  await Promise.all([syncRemoteFoodLogs(), syncWebhookWorkouts()]);
+  await syncAdaptiveDashboard();
+  renderFoodLog();
+  renderDashboardOverview();
+  showToast(`Halo, ${user.name}`, 'success');
+  openPendingMenu();
+}
+
+// A fresh throwaway account per visit; the server deletes it after a day.
+export async function loginAsGuest() {
+  const button = document.getElementById('login-guest-btn');
+  const error = document.getElementById('login-error-msg');
+  if (button.disabled) return;
+  button.disabled = true;
+  error.textContent = '';
+  try {
+    const response = await fetch('api/session/guest', { method: 'POST' });
+    let payload = {};
+    try { payload = await response.json(); } catch { payload = {}; }
+    if (!response.ok) throw new Error(payload.error || 'Tidak bisa masuk');
+    await finishLogin(payload.user);
+  } catch (guestError) {
+    error.textContent = guestError instanceof TypeError ? 'Server tidak berjalan' : guestError.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+
 export async function submitLogin(event) {
   event?.preventDefault();
   const usernameInput = document.getElementById('login-username');
@@ -98,16 +131,7 @@ export async function submitLogin(event) {
     let payload = {};
     try { payload = await response.json(); } catch { payload = {}; }
     if (!response.ok) throw new Error(response.status === 401 ? 'Username atau password salah' : payload.error || 'Tidak bisa masuk');
-    if (redirectAdmin(payload.user)) return;
-    applyAuthenticatedUser(payload.user);
-    document.getElementById('pin-lock-overlay')?.classList.remove('open');
-    _rawSwitchTab(state.pendingTab || 'dashboard');
-    await Promise.all([syncRemoteFoodLogs(), syncWebhookWorkouts()]);
-    await syncAdaptiveDashboard();
-    renderFoodLog();
-    renderDashboardOverview();
-    showToast(`Halo, ${payload.user.name}`, 'success');
-    openPendingMenu();
+    await finishLogin(payload.user);
   } catch (loginError) {
     passwordInput.value = '';
     error.textContent = loginError instanceof TypeError ? 'Server tidak berjalan' : loginError.message;

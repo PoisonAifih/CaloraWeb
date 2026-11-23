@@ -68,6 +68,8 @@ export function activityFor(row: ActivityLog) {
   };
 }
 
+// Every guest shows as "Guest CAI"; the stored name only stays unique for the database.
 export function publicUser(user: User, profile: NutritionProfile | null) {
-  return { id: user.id, name: user.name, email: user.email, role: user.role, profile: profileFor(profile) };
+  const name = user.role === 'GUEST' ? 'Guest CAI' : user.name;
+  return { id: user.id, name, email: user.email, role: user.role, profile: profileFor(profile) };
 }

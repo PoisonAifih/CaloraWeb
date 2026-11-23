@@ -12,6 +12,12 @@ export class AuthController {
     return this.auth.login(String(body.username || '').trim(), String(body.password || ''), res);
   }
 
+  @Post('guest')
+  @HttpCode(HttpStatus.OK)
+  guest(@Res({ passthrough: true }) res: Response) {
+    return this.auth.guest(res);
+  }
+
   @Get()
   current(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     return this.auth.current(req, res);
