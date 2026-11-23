@@ -70,7 +70,7 @@ export async function endSession() {
   clearInterval(timerInterval);
   timerInterval = null;
   const durationMin = Math.round(state.timerSec / 60);
-  const response = await fetch('/api/activity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ activityType:'WORKOUT', name:'Workout Session', startedAt:new Date().toISOString(), durationSeconds:state.timerSec, dataQuality:'USER_REPORTED' }) });
+  const response = await fetch('api/activity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ activityType:'WORKOUT', name:'Workout Session', startedAt:new Date().toISOString(), durationSeconds:state.timerSec, dataQuality:'USER_REPORTED' }) });
   if (!response.ok) {
     syncSessionButtons();
     return showToast('Workout session could not be saved', 'danger');
@@ -86,7 +86,7 @@ export async function endSession() {
 export async function syncWebhookWorkouts() {
   if (!state.currentUser) return;
   try {
-    const res = await fetch('/api/activity');
+    const res = await fetch('api/activity');
     if (!res.ok) return;
     const remoteWorkouts = await res.json();
     if (!Array.isArray(remoteWorkouts) || remoteWorkouts.length === 0) return;
@@ -218,7 +218,7 @@ export function deleteExerciseEntry(id) {
     onConfirm: async () => {
       const entry = state.workouts.find(workout => workout.id === id);
       if (entry?.source || entry?.provider) {
-        const response = await fetch(`/api/activity/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        const response = await fetch(`api/activity/${encodeURIComponent(id)}`, { method: 'DELETE' });
         if (!response.ok) return showToast('Workout could not be deleted', 'danger');
       }
       state.deleteWorkout(id);
@@ -243,7 +243,7 @@ export async function handleLogSubmit(e) {
   if (!name) return;
 
   const now = new Date();
-  const response = await fetch('/api/activity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ activityType:'STRENGTH', name:`${name} · ${weight}kg × ${reps}`, startedAt:now.toISOString(), dataQuality:'USER_REPORTED' }) });
+  const response = await fetch('api/activity', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ activityType:'STRENGTH', name:`${name} · ${weight}kg × ${reps}`, startedAt:now.toISOString(), dataQuality:'USER_REPORTED' }) });
   if (!response.ok) return showToast('Exercise entry could not be saved', 'danger');
 
   if (nameInput)   nameInput.value   = '';
@@ -278,7 +278,7 @@ export async function handleBodyStatsSubmit(e) {
   button.disabled = true;
   button.textContent = 'Saving…';
   try {
-    const response = await fetch('/api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(profile) });
+    const response = await fetch('api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(profile) });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || 'Profile could not be saved');
     state.setBodyStats(payload);

@@ -17,16 +17,16 @@ async function api(path, options = {}) {
 }
 
 async function loadMenus() {
-  menus = await api('/api/admin/menus');
+  menus = await api('api/admin/menus');
   renderMenus();
   renderQrCodes();
 }
 
 async function loadDashboard() {
-  const response = await fetch('/api/admin/dashboard');
+  const response = await fetch('api/admin/dashboard');
   // Admins sign in on the main login; anyone else goes back to the app.
   if (!response.ok) {
-    location.replace('/');
+    location.replace(document.baseURI);
     return false;
   }
   const data = await response.json();
@@ -42,7 +42,7 @@ async function loadDashboard() {
   }).join('') || '<tr><td colspan="6">No lunch plans for tomorrow.</td></tr>';
   document.querySelectorAll('[data-plan-id]').forEach(select => select.addEventListener('change', async () => {
     try {
-      await api(`/api/admin/plans/${encodeURIComponent(select.dataset.planId)}/status`, { method:'PUT', body:JSON.stringify({ status:select.value }) });
+      await api(`api/admin/plans/${encodeURIComponent(select.dataset.planId)}/status`, { method:'PUT', body:JSON.stringify({ status:select.value }) });
     } catch (updateError) { alert(updateError.message || 'Status update failed'); }
   }));
   return true;
@@ -131,7 +131,7 @@ menuForm.addEventListener('submit', async event => {
   const button = field('menu-save');
   button.disabled = true;
   try {
-    await api(id ? `/api/admin/menus/${encodeURIComponent(id)}` : '/api/admin/menus', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });
+    await api(id ? `api/admin/menus/${encodeURIComponent(id)}` : 'api/admin/menus', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });
     resetMenuForm();
     await loadMenus();
   } catch (saveError) {
@@ -150,7 +150,7 @@ document.getElementById('menu-rows').addEventListener('click', async event => {
   if (toggleId) {
     const menu = menus.find(item => item.id === toggleId);
     try {
-      await api(`/api/admin/menus/${encodeURIComponent(toggleId)}`, { method:'PUT', body:JSON.stringify({ active: !menu.active }) });
+      await api(`api/admin/menus/${encodeURIComponent(toggleId)}`, { method:'PUT', body:JSON.stringify({ active: !menu.active }) });
       await loadMenus();
     } catch (toggleError) { alert(toggleError.message); }
   }
@@ -158,7 +158,7 @@ document.getElementById('menu-rows').addEventListener('click', async event => {
 
 // ── QR codes ─────────────────────────────────────────────────────────────────
 function qrUrl(menu) {
-  return `/api/admin/menus/${encodeURIComponent(menu.id)}/qr.svg?base=${encodeURIComponent(location.origin)}`;
+  return `api/admin/menus/${encodeURIComponent(menu.id)}/qr.svg?base=${encodeURIComponent(document.baseURI)}`;
 }
 
 function renderQrCodes() {
@@ -178,8 +178,8 @@ field('qr-filter').addEventListener('change', renderQrCodes);
 
 // ── Session ──────────────────────────────────────────────────────────────────
 signOut.addEventListener('click', async () => {
-  try { await fetch('/api/session', { method:'DELETE' }); } catch {}
-  location.replace('/');
+  try { await fetch('api/session', { method:'DELETE' }); } catch {}
+  location.replace(document.baseURI);
 });
 
 let initialView = 'kitchen';

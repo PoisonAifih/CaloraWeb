@@ -39,7 +39,7 @@ export function showNotifications() {
 export async function syncAdaptiveDashboard() {
   if (!state.currentUser) return;
   try {
-    const response = await fetch('/api/dashboard');
+    const response = await fetch('api/dashboard');
     if (!response.ok) return;
     state.setDashboard(await response.json());
   } catch (error) {

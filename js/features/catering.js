@@ -29,7 +29,7 @@ async function loadMenus() {
   if (menus || menusLoading) return;
   menusLoading = true;
   try {
-    const response = await fetch('/api/menus');
+    const response = await fetch('api/menus');
     if (response.ok) menus = await response.json();
   } catch {}
   menusLoading = false;

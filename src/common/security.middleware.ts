@@ -14,7 +14,7 @@ function sameOrigin(req: Request) {
 }
 
 function isRateLimited(req: Request) {
-  const key = `${req.socket.remoteAddress || 'unknown'}:${req.originalUrl}`;
+  const key = `${req.ip || 'unknown'}:${req.originalUrl}`;
   const current = rateLimits.get(key);
   const timestamp = Date.now();
   if (!current || current.resetAt <= timestamp) {

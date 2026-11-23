@@ -9,7 +9,7 @@ import { syncWebhookWorkouts } from './workout.js';
 // Admin accounts only use the catering console, not the personal tracker.
 function redirectAdmin(user) {
   if (user?.role !== 'ADMIN') return false;
-  location.replace('/admin');
+  location.replace('admin');
   return true;
 }
 
@@ -29,7 +29,7 @@ function applyAuthenticatedUser(user) {
 
 export async function checkAuth() {
   try {
-    const response = await fetch('/api/session');
+    const response = await fetch('api/session');
     if (response.ok) {
       const { user } = await response.json();
       if (redirectAdmin(user)) return true;
@@ -90,7 +90,7 @@ export async function submitLogin(event) {
   button.textContent = 'Masuk…';
   error.textContent = '';
   try {
-    const response = await fetch('/api/session', {
+    const response = await fetch('api/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password: passwordInput.value })
@@ -118,7 +118,7 @@ export async function submitLogin(event) {
 }
 
 export async function lockApp() {
-  try { await fetch('/api/session', { method: 'DELETE' }); } catch {}
+  try { await fetch('api/session', { method: 'DELETE' }); } catch {}
   state.setCurrentUser(null, null, null);
   state.pendingTab = 'dashboard';
   updateNavUserDisplay();

@@ -20,7 +20,7 @@ export async function saveWeightLog(event) {
   if (!requireAuth(event)) return;
   event.preventDefault();
   const input = document.getElementById('trend-weight-input');
-  const response = await fetch('/api/weight', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ weightKg:Number(input.value), measuredAt:new Date().toISOString(), source:'MANUAL' }) });
+  const response = await fetch('api/weight', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ weightKg:Number(input.value), measuredAt:new Date().toISOString(), source:'MANUAL' }) });
   const payload = await response.json();
   if (!response.ok) return showToast(payload.error || 'Weight could not be saved', 'danger');
   input.value = '';

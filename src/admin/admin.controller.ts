@@ -53,7 +53,7 @@ export class AdminController {
     return menu;
   }
 
-  // QR target is the app origin the admin is using, so it matches the public URL.
+  // QR target is the app URL (origin plus any sub-path) the admin is using, so it matches the public URL.
   @Get('menus/:id/qr.svg')
   @Header('Content-Type', 'image/svg+xml')
   @Header('Cache-Control', 'no-store')
@@ -63,7 +63,7 @@ export class AdminController {
     try {
       const url = new URL(String(base || ''));
       if (!['http:', 'https:'].includes(url.protocol)) throw new Error();
-      origin = url.origin;
+      origin = url.origin + url.pathname.replace(/\/+$/, '');
     } catch {
       throw new BadRequestException('Invalid base URL');
     }

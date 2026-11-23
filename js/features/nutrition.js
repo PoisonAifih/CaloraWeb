@@ -90,7 +90,7 @@ export function deleteFoodLogEntry(id) {
     isDanger: true,
     onConfirm: async () => {
       try {
-        const response = await fetch(`/api/food/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        const response = await fetch(`api/food/${encodeURIComponent(id)}`, { method: 'DELETE' });
         if (!response.ok) throw new Error('Food entry could not be deleted');
         state.deleteFoodLog(id);
         renderFoodLog();
@@ -122,7 +122,7 @@ export async function saveManualFoodLog(event) {
   button.disabled = true;
   button.textContent = 'Saving…';
   try {
-    const response = await fetch('/api/food', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
+    const response = await fetch('api/food', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || 'Food entry could not be saved');
     state.addFoodLog(payload);
@@ -143,7 +143,7 @@ export async function saveManualFoodLog(event) {
 // Opens the log form pre-filled from a catering menu QR code (/?menu=<id>).
 export async function openScannedMenu(menuId) {
   try {
-    const response = await fetch(`/api/menus/${encodeURIComponent(menuId)}`);
+    const response = await fetch(`api/menus/${encodeURIComponent(menuId)}`);
     const menu = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(menu.error || 'Menu not found');
     document.getElementById('food-name-input').value = menu.name;
@@ -161,7 +161,7 @@ export async function openScannedMenu(menuId) {
 export async function syncRemoteFoodLogs() {
   if (!state.currentUser) return;
   try {
-    const response = await fetch('/api/food');
+    const response = await fetch('api/food');
     if (!response.ok) return;
     const entries = await response.json();
     if (Array.isArray(entries)) state.setFoodLog(entries);
@@ -198,7 +198,7 @@ export async function analyzeFoodPhoto(event) {
   try {
     const body = new FormData();
     body.append('image', file);
-    const response = await fetch('/api/analyze', { method: 'POST', body });
+    const response = await fetch('api/analyze', { method: 'POST', body });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || 'Photo could not be analyzed');
     document.getElementById('food-name-input').value = payload.mealName || '';

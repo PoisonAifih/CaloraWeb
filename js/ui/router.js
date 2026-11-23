@@ -7,28 +7,32 @@ import { renderTrends } from '../features/trends.js';
 import { openBodyStatsModal } from './modal.js';
 import { renderCatering } from '../features/catering.js';
 
+// The app may live under a sub-path (e.g. /calora/); the server writes it into <base href>.
+const BASE = new URL(document.baseURI).pathname;
+
 const TAB_PATHS = {
-  welcome: '/',
-  dashboard: '/dashboard',
-  catering: '/catering',
-  training: '/training',
-  nutrition: '/nutrition',
-  trends: '/trends',
-  profile: '/profile'
+  welcome: '',
+  dashboard: 'dashboard',
+  catering: 'catering',
+  training: 'training',
+  nutrition: 'nutrition',
+  trends: 'trends',
+  profile: 'profile'
 };
 
 const PATH_TABS = {
-  '/': 'dashboard',
-  '/dashboard': 'dashboard',
-  '/catering': 'catering',
-  '/training': 'training',
-  '/nutrition': 'nutrition',
-  '/trends': 'trends',
-  '/profile': 'profile'
+  '': 'dashboard',
+  'dashboard': 'dashboard',
+  'catering': 'catering',
+  'training': 'training',
+  'nutrition': 'nutrition',
+  'trends': 'trends',
+  'profile': 'profile'
 };
 
 export function tabFromPath(pathname = location.pathname) {
-  return PATH_TABS[pathname] || 'dashboard';
+  const relative = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname.replace(/^\/+/, '');
+  return PATH_TABS[relative] || 'dashboard';
 }
 
 export function switchTab(name, replace = false) {
@@ -44,7 +48,7 @@ export function _rawSwitchTab(name, replace = false) {
   const panel = document.getElementById(`tab-${name}`);
   if (panel) panel.classList.add('active');
 
-  const path = TAB_PATHS[name] || '/';
+  const path = BASE + (TAB_PATHS[name] || '');
   if (location.pathname !== path) {
     history[replace ? 'replaceState' : 'pushState']({ tab: name }, '', path);
   }
